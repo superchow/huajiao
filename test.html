@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>测试页面</title>
+	</head>
+	<body>
+		测试页面
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<!--<script type="text/javascript">
+			//注册请求
+		function test(){
+			var msg=null;
+		$.ajax('./DB/reg.php',{
+			data:regInfo={
+				identity:"teacher",
+				school_id: "20130610110202",
+				password: "7913086zwz",
+				email: "2665752129@qq.com",
+				name:"周卫忠",
+				sex:"男",
+				_academy:"信息工程学院",
+				_major:"物联网工程",
+				_class:"二班",
+				birth:"1995-01-20",
+				birthplace:"江西"
+			},
+			
+			dataType:'JSON',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:5000,//超时时间设置为5秒；
+			//headers:{'Content-Type':'application/json'},	              
+			success:function(data){
+				//服务器返回响应，根据响应结果，分析是否登录成功；
+				console.log(data.msg);
+				console.log(data.msg=='success');
+				
+				if(data.msg=='success'){return msg="zuc";}
+				if(data.msg=='Already'){return msg='该账号已存在';}
+				if(data.msg=='faile'){return msg='注册失败了，请再次尝试';}
+				console.log(data.msg);
+				console.log(JSON.stringify(data));
+			},
+			error:function(xhr,type,errorThrown){
+				//异常处理；
+				if(type=='timeout') {
+          return msg="请求超时";
+        }else{
+        	console.log(xhr);
+        	console.log(type);
+        	console.log(errorThrown);
+          return msg='请求失败：' + type + '\n err:' + errorThrown;
+				}
+      },
+      async:false
+		});
+		return msg;
+		}
+		console.log(test());
+		</script>-->
+		<script type="text/javascript">
+			//注册请求
+	function test(){
+		var _ajax=$.ajax('./DB/reg.php',{
+			data:regInfo,			
+			dataType:'json',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:5000,//超时时间设置为5秒；
+			//headers:{'Content-Type':'application/json'},	              			
+      async:false
+		});
+    console.log(_ajax);
+    return JSON.parse(_ajax.responseText).msg;
+    //return msg.responseJSON.msg; 失败
+	}
+	console.log(test());
+		</script>
+		
+	</body>
+</html>

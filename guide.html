@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-slider button{
+				position: absolute;
+				left:30%;
+				bottom:80px;
+				font-size:20px;	
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-slider">
+		  <div class="mui-slider-group">
+		    <!--第一个内容区容器-->
+		    <div class="mui-slider-item">		      
+		      <a href="#"><img src="images/guide-1.png"/></a>
+		    </div>
+		    <!--第二个内容区-->
+		    <div class="mui-slider-item">
+		      <a href="#"><img src="images/guide-2.png"/></a>
+		    </div>
+		    <!--第三个内容区-->
+		    <div class="mui-slider-item">
+		      <a href="#">
+		      	<img src="images/guide-3.png"/>
+		        <button type="button" class="mui-btn mui-btn-primary">开启班级之旅</button>
+		      </a>
+		    </div>
+		  </div>
+		  <div class="mui-slider-indicator">
+				<div class="mui-indicator mui-active"></div>
+				<div class="mui-indicator"></div>
+				<div class="mui-indicator"></div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init();
+			mui('.mui-slider').slider({
+					interval: 1000
+				});
+			//图片切换时，触发动画
+			document.querySelector('.mui-slider').addEventListener('slide', function(event) {
+				//注意slideNumber是从0开始的；
+			 	var index = event.detail.slideNumber;
+			 	if(index==2){
+			 		
+			 	}
+			},false);
+			var toMain=function(data){
+				mui.openWindow({
+					url:"main.html",
+					id:"mian",
+					preload:true,
+					waiting:{
+						autoShow:false
+					},
+					extras:{
+						info:data
+					}
+				});
+			};
+			//设置网路地址
+			localStorage.setItem("url","http://192.168.1.105:8081/huajiao1/");
+			var autoLogin=function(a,b,c){
+				var url=localStorage.getItem("url");
+				mui.ajax(url+'DB/login.php',{
+					data:{
+						identity:a,
+						school_id:b,
+						password:c 
+					},					
+					dataType:'JSON',//服务器返回json格式数据
+					type:'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					crossDomain: true,
+					//headers:{'Content-Type':'application/json'},	              
+					success:function(data){
+						//服务器返回响应，根据响应结果，分析是否登录成功；
+						if(data.msg=="faile"){
+							console.log(JSON.stringify(data));
+							mui.openWindow({id:'login'});
+							return;
+						}
+						if(data==='null'){
+							mui.openWindow({id:"login"});
+							return;
+						}
+						console.log(JSON.stringify(data));
+						toMain(data);
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						//mui.toast('网络连接失败，请检查网络设置');						
+						if(type=='timeout') {
+              mui.toast("请求超时：请检查网络")
+            } else {
+            	//console.log(xhr);
+            	//console.log(type);
+            	//console.log(errorThrown)
+              mui.toast('请求失败：' + type + '\n err:' + errorThrown);
+            }
+					}
+				});
+			}
+			
+			mui.plusReady(function(){
+				var h = window.innerHeight;
+				var imgs=document.querySelectorAll("img");
+				mui.each(imgs,function(){
+					this.style.height=h+"px";
+				});
+				document.querySelector('button').addEventListener("tap",function(){
+					plus.storage.setItem("IsFrist", "true");
+					loginviewShow.show("slide-in-right",150);
+					plus.webview.currentWebview().close();
+				},false);
+				plus.storage.setItem('identity',"student");
+				plus.storage.setItem('school_id',"2013061011218");
+				plus.storage.setItem('password',"7913086zwz");
+				//登录判断
+				(function(){
+					var IsFrist=plus.storage.getItem("IsFrist");
+					if(IsFrist){
+						var identity=plus.storage.getItem('identity') || '';
+						var schoolId=plus.storage.getItem("school_id") || '';
+						var password=plus.storage.getItem("password") || '';
+						if(identity && schoolId && password){
+							autoLogin(identity,schoolId,password);
+						}else{
+							loginviewShow.show("slide-in-right",150);
+						}	
+					}
+				})(mui,document);
+							
+				//初次登陆
+				var loginviewShow=mui.preload({
+			    url:"login.html",
+			    id:"login",//默认使用当前页面的url作为id
+			    waiting: {
+						autoShow: false
+					},
+			    show:{
+			    	aniShow:"pop-in",//页面显示动画，默认为”slide-in-right“； 
+			    }
+			    
+				});
+			
+		});
+			
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,988 @@
+var academyMajorClassData = [{
+	value: '110000',
+	text: '土木建筑学院',
+	children: [{
+		value: "110110",
+		text: "土木工程",
+		children: [{
+			value: "110111",
+			text: "一班"
+		}, {
+			value: "110112",
+			text: "二班"
+		}, {
+			value: "110113",
+			text: "三班"
+		}, {
+			value: "110114",
+			text: "四班"
+		}]
+	}, {
+		value: "110120",
+		text: "工程管理",
+		children: [{
+			value: "110121",
+			text: "一班"
+		}, {
+			value: "110122",
+			text: "二班"
+		}, {
+			value: "110123",
+			text: "三班"
+		}, {
+			value: "110124",
+			text: "四班"
+		}]
+	}, {
+		value: "110130",
+		text: "给水排水工程",
+		children: [{
+			value: "110131",
+			text: "一班"
+		}, {
+			value: "110132",
+			text: "二班"
+		}, {
+			value: "110133",
+			text: "三班"
+		}, {
+			value: "110134",
+			text: "四班"
+		}]
+	}, {
+		value: "110140",
+		text: "环境工程",
+		children: [{
+			value: "110141",
+			text: "一班"
+		}, {
+			value: "110142",
+			text: "二班"
+		}, {
+			value: "110143",
+			text: "三班"
+		}, {
+			value: "110144",
+			text: "四班"
+		}]
+	}, {
+		value: "110150",
+		text: "建筑环境与设备工程",
+		children: [{
+			value: "110151",
+			text: "一班"
+		}, {
+			value: "110152",
+			text: "二班"
+		}, {
+			value: "110153",
+			text: "三班"
+		}, {
+			value: "110154",
+			text: "四班"
+		}]
+	}, {
+		value: "110160",
+		text: "建筑学专业",
+		children: [{
+			value: "110161",
+			text: "一班"
+		}, {
+			value: "110162",
+			text: "二班"
+		}, {
+			value: "110163",
+			text: "三班"
+		}, {
+			value: "110164",
+			text: "四班"
+		}]
+	}, {
+		value: "110170",
+		text: "交通工程专业",
+		children: [{
+			value: "110171",
+			text: "一班"
+		}, {
+			value: "110172",
+			text: "二班"
+		}, {
+			value: "110173",
+			text: "三班"
+		}, {
+			value: "110174",
+			text: "四班"
+		}]
+	}, {
+		value: "110180",
+		text: "测绘工程专业",
+		children: [{
+			value: "110181",
+			text: "一班"
+		}, {
+			value: "110182",
+			text: "二班"
+		}, {
+			value: "110183",
+			text: "三班"
+		}, {
+			value: "110184",
+			text: "四班"
+		}]
+	}]
+}, {
+	value: '120000',
+	text: '机电与车辆工程学院',
+	children: [{
+		value: "120110",
+		text: "机械设计制造及其自动化",
+		children: [{
+			value: "120111",
+			text: "一班"
+		}, {
+			value: "120112",
+			text: "二班"
+		}, {
+			value: "120113",
+			text: "三班"
+		}, {
+			value: "120114",
+			text: "四班"
+		}]
+	}, {
+		value: "120120",
+		text: "材料成型与控制工程",
+		children: [{
+			value: "120121",
+			text: "一班"
+		}, {
+			value: "120122",
+			text: "二班"
+		}, {
+			value: "120123",
+			text: "三班"
+		}, {
+			value: "120124",
+			text: "四班"
+		}]
+	}, {
+		value: "120130",
+		text: "测控技术与仪器",
+		children: [{
+			value: "120131",
+			text: "一班"
+		}, {
+			value: "120132",
+			text: "二班"
+		}, {
+			value: "120133",
+			text: "三班"
+		}, {
+			value: "120134",
+			text: "四班"
+		}]
+	}, {
+		value: "120140",
+		text: "工业工程",
+		children: [{
+			value: "120141",
+			text: "一班"
+		}, {
+			value: "120142",
+			text: "二班"
+		}, {
+			value: "120143",
+			text: "三班"
+		}, {
+			value: "120144",
+			text: "四班"
+		}]
+	}, {
+		value: "120150",
+		text: "物流管理",
+		children: [{
+			value: "120151",
+			text: "一班"
+		}, {
+			value: "120152",
+			text: "二班"
+		}, {
+			value: "120153",
+			text: "三班"
+		}, {
+			value: "120154",
+			text: "四班"
+		}]
+	}, {
+		value: "120160",
+		text: "机械电子工程",
+		children: [{
+			value: "120161",
+			text: "一班"
+		}, {
+			value: "120162",
+			text: "二班"
+		}, {
+			value: "120163",
+			text: "三班"
+		}, {
+			value: "120164",
+			text: "四班"
+		}]
+	}, {
+		value: "120170",
+		text: "能源与动力工程",
+		children: [{
+			value: "120171",
+			text: "一班"
+		}, {
+			value: "120172",
+			text: "二班"
+		}, {
+			value: "120173",
+			text: "三班"
+		}, {
+			value: "120174",
+			text: "四班"
+		}]
+	}, {
+		value: "120180",
+		text: "车辆工程",
+		children: [{
+			value: "120181",
+			text: "一班"
+		}, {
+			value: "120182",
+			text: "二班"
+		}, {
+			value: "120183",
+			text: "三班"
+		}, {
+			value: "120184",
+			text: "四班"
+		}]
+	}]
+}, {
+	value: '130000',
+	text: '电气与自动化工程学院',
+	children: [{
+		value: "130110",
+		text: "电气工程及其自动化",
+		children: [{
+			value: "130111",
+			text: "一班"
+		}, {
+			value: "130112",
+			text: "二班"
+		}, {
+			value: "130113",
+			text: "三班"
+		}, {
+			value: "130114",
+			text: "四班"
+		}]
+	}, {
+		value: "130120",
+		text: "自动化",
+		children: [{
+			value: "130121",
+			text: "一班"
+		}, {
+			value: "130122",
+			text: "二班"
+		}, {
+			value: "130123",
+			text: "三班"
+		}, {
+			value: "130124",
+			text: "四班"
+		}]
+	}, {
+		value: "130130",
+		text: "电子信息工程",
+		children: [{
+			value: "130131",
+			text: "一班"
+		}, {
+			value: "130132",
+			text: "二班"
+		}, {
+			value: "130133",
+			text: "三班"
+		}, {
+			value: "130134",
+			text: "四班"
+		}]
+	}, {
+		value: "130140",
+		text: "建筑电气与智能化",
+		children: [{
+			value: "130141",
+			text: "一班"
+		}, {
+			value: "130142",
+			text: "二班"
+		}, {
+			value: "130143",
+			text: "三班"
+		}, {
+			value: "130144",
+			text: "四班"
+		}]
+	}, {
+		value: "130150",
+		text: "轨道交通信号与控制",
+		children: [{
+			value: "130151",
+			text: "一班"
+		}, {
+			value: "130152",
+			text: "二班"
+		}, {
+			value: "130153",
+			text: "三班"
+		}, {
+			value: "130154",
+			text: "四班"
+		}]
+	}]
+}, {
+	value: '140000',
+	text: '信息工程学院',
+	children: [{
+		value: "140110",
+		text: "计算机科学与技术",
+		children: [{
+			value: "140111",
+			text: "一班"
+		}, {
+			value: "140112",
+			text: "二班"
+		}]
+	}, {
+		value: "140120",
+		text: "通信工程",
+		children: [{
+			value: "140121",
+			text: "一班"
+		}, {
+			value: "140122",
+			text: "二班"
+		}]
+	}, {
+		value: "140130",
+		text: "信息工程",
+		children: [{
+			value: "140131",
+			text: "一班"
+		}, {
+			value: "140132",
+			text: "二班"
+		}]
+	}, {
+		value: "140140",
+		text: "物联网工程",
+		children: [{
+			value: "140141",
+			text: "一班"
+		}, {
+			value: "140142",
+			text: "二班"
+		}]
+	}, {
+		value: "140150",
+		text: "电子科学与技术",
+		children: [{
+			value: "140151",
+			text: "一班"
+		}, {
+			value: "140152",
+			text: "二班"
+		}]
+	}, {
+		value: "140160",
+		text: "网络工程",
+		children: [{
+			value: "140161",
+			text: "一班"
+		}, {
+			value: "140162",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '150000',
+	text: '软件学院',
+	children: [{
+		value: "150110",
+		text: "软件工程",
+		children: [{
+			value: "150111",
+			text: "软件+道路与铁道"
+		}, {
+			value: "150112",
+			text: "软件+桥梁"
+		}, {
+			value: "150113",
+			text: "软件+机械电子"
+		}, {
+			value: "150114",
+			text: "软件+电气及其自动化"
+		}, {
+			value: "150115",
+			text: "软件+会计学"
+		}, {
+			value: "150116",
+			text: "软件+交通运输"
+		}, {
+			value: "150117",
+			text: "软件+交通设备"
+		}, {
+			value: "150118",
+			text: "软件+信息"
+		}, {
+			value: "150119",
+			text: "软件+电子商务"
+		}]
+	}]
+}, {
+	value: '160000',
+	text: '体育学院',
+	children: [{
+		value: "160110",
+		text: "体育教育",
+		children: [{
+			value: "160111",
+			text: "一班"
+		}, {
+			value: "160112",
+			text: "二班"
+		}, {
+			value: "160113",
+			text: "三班"
+		}]
+	}, {
+		value: "160120",
+		text: "运动训练",
+		children: [{
+			value: "160121",
+			text: "一班"
+		}, {
+			value: "160122",
+			text: "二班"
+		}, {
+			value: "160123",
+			text: "三班"
+		}]
+	}]
+}, {
+	value: '170000',
+	text: '理学院',
+	children: [{
+		value: "170110",
+		text: "信息与计算科学",
+		children: [{
+			value: "170111",
+			text: "一班"
+		}, {
+			value: "170112",
+			text: "二班"
+		}]
+	}, {
+		value: "170120",
+		text: "应用化学",
+		children: [{
+			value: "170121",
+			text: "一班"
+		}, {
+			value: "170122",
+			text: "二班"
+		}]
+	}, {
+		value: "170130",
+		text: "高分子材料与工程",
+		children: [{
+			value: "170131",
+			text: "一班"
+		}, {
+			value: "170132",
+			text: "二班"
+		}]
+	}, {
+		value: "170140",
+		text: "光信息科学与技术",
+		children: [{
+			value: "170141",
+			text: "一班"
+		}, {
+			value: "170142",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '180000',
+	text: '外国语学院',
+	children: [{
+		value: "180110",
+		text: "英语(翻译)",
+		children: [{
+			value: "180111",
+			text: "一班"
+		}, {
+			value: "180112",
+			text: "二班"
+		}]
+	}, {
+		value: "180120",
+		text: "英语(国际贸易)",
+		children: [{
+			value: "180121",
+			text: "一班"
+		}, {
+			value: "180122",
+			text: "二班"
+		}]
+	}, {
+		value: "180130",
+		text: "英语(国际旅游)",
+		children: [{
+			value: "180131",
+			text: "一班"
+		}, {
+			value: "180132",
+			text: "二班"
+		}]
+	}, {
+		value: "180140",
+		text: "英语(国际金融)",
+		children: [{
+			value: "180141",
+			text: "一班"
+		}, {
+			value: "180142",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '190000',
+	text: '艺术学院',
+	children: [{
+		value: "190110",
+		text: "数字媒体设计",
+		children: [{
+			value: "190111",
+			text: "一班"
+		}, {
+			value: "190112",
+			text: "二班"
+		}]
+	}, {
+		value: "190120",
+		text: "环境设计",
+		children: [{
+			value: "190121",
+			text: "一班"
+		}, {
+			value: "190122",
+			text: "二班"
+		}]
+	}, {
+		value: "190130",
+		text: "产品设计",
+		children: [{
+			value: "190131",
+			text: "一班"
+		}, {
+			value: "190132",
+			text: "二班"
+		}]
+	}, {
+		value: "190140",
+		text: "视觉传达设计",
+		children: [{
+			value: "190141",
+			text: "一班"
+		}, {
+			value: "190142",
+			text: "二班"
+		}]
+	}, {
+		value: "190150",
+		text: "音乐学",
+		children: [{
+			value: "190151",
+			text: "一班"
+		}, {
+			value: "190152",
+			text: "二班"
+		}]
+	}, {
+		value: "190160",
+		text: "舞蹈表演",
+		children: [{
+			value: "190161",
+			text: "一班"
+		}, {
+			value: "190162",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '200000',
+	text: '国防生学院',
+	children: [{
+		value: "200110",
+		text: "南京军区",
+		children: [{
+			value: "200111",
+			text: "一班"
+		}, {
+			value: "200112",
+			text: "二班"
+		}, {
+			value: "200113",
+			text: "三班"
+		}, {
+			value: "200114",
+			text: "四班"
+		}, {
+			value: "200115",
+			text: "五班"
+		}]
+	}]
+}, {
+	value: '210000',
+	text: '经济管理学院',
+	children: [{
+		value: "210110",
+		text: "会计学",
+		children: [{
+			value: "210111",
+			text: "一班"
+		}, {
+			value: "210112",
+			text: "二班"
+		}]
+	}, {
+		value: "210120",
+		text: "金融学",
+		children: [{
+			value: "210121",
+			text: "一班"
+		}, {
+			value: "210122",
+			text: "二班"
+		}]
+	}, {
+		value: "210130",
+		text: "电子商务",
+		children: [{
+			value: "210131",
+			text: "一班"
+		}, {
+			value: "210132",
+			text: "二班"
+		}]
+	}, {
+		value: "210140",
+		text: "人力资源管理",
+		children: [{
+			value: "210141",
+			text: "一班"
+		}, {
+			value: "210142",
+			text: "二班"
+		}]
+	}, {
+		value: "210150",
+		text: "经济学",
+		children: [{
+			value: "210151",
+			text: "一班"
+		}, {
+			value: "210152",
+			text: "二班"
+		}]
+	}, {
+		value: "210160",
+		text: "统计学",
+		children: [{
+			value: "210161",
+			text: "一班"
+		}, {
+			value: "210162",
+			text: "二班"
+		}]
+	}, {
+		value: "210170",
+		text: "国际经济与贸易",
+		children: [{
+			value: "210171",
+			text: "一班"
+		}, {
+			value: "210172",
+			text: "二班"
+		}]
+	}, {
+		value: "210180",
+		text: "工商管理",
+		children: [{
+			value: "210181",
+			text: "一班"
+		}, {
+			value: "210182",
+			text: "二班"
+		}]
+	}, {
+		value: "210190",
+		text: "市场营销",
+		children: [{
+			value: "210191",
+			text: "一班"
+		}, {
+			value: "210192",
+			text: "二班"
+		}]
+	}, {
+		value: "210200",
+		text: "信息管理与信息系统",
+		children: [{
+			value: "210201",
+			text: "一班"
+		}, {
+			value: "210202",
+			text: "二班"
+		}]
+	}, {
+		value: "210210",
+		text: "经济统计学",
+		children: [{
+			value: "210211",
+			text: "一班"
+		}, {
+			value: "210212",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '220000',
+	text: '人文社会科学学院',
+	children: [{
+		value: "220110",
+		text: "政治经济学",
+		children: [{
+			value: "220111",
+			text: "一班"
+		}, {
+			value: "220112",
+			text: "二班"
+		}]
+	}, {
+		value: "220120",
+		text: "民商法学",
+		children: [{
+			value: "220121",
+			text: "一班"
+		}, {
+			value: "220122",
+			text: "二班"
+		}]
+	}, {
+		value: "220130",
+		text: "宪法与行政法学",
+		children: [{
+			value: "220131",
+			text: "一班"
+		}, {
+			value: "220132",
+			text: "二班"
+		}]
+	}, {
+		value: "220140",
+		text: "刑法学",
+		children: [{
+			value: "220141",
+			text: "一班"
+		}, {
+			value: "220142",
+			text: "二班"
+		}]
+	}, {
+		value: "220150",
+		text: "经济法学",
+		children: [{
+			value: "220151",
+			text: "一班"
+		}, {
+			value: "220152",
+			text: "二班"
+		}]
+	}, {
+		value: "220160",
+		text: "法学",
+		children: [{
+			value: "220161",
+			text: "一班"
+		}, {
+			value: "220162",
+			text: "二班"
+		}]
+	}, {
+		value: "220170",
+		text: "汉语言文学",
+		children: [{
+			value: "220171",
+			text: "一班"
+		}, {
+			value: "2201172",
+			text: "二班"
+		}]
+	}, {
+		value: "220180",
+		text: "公共事业管理",
+		children: [{
+			value: "220181",
+			text: "一班"
+		}, {
+			value: "220182",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '230000',
+	text: '马克思主义学院',
+	children: [{
+		value: "230110",
+		text: "马克思主义基本原理",
+		children: [{
+			value: "230111",
+			text: "一班"
+		}]
+	}, {
+		value: "230120",
+		text: "思想政治教育",
+		children: [{
+			value: "230121",
+			text: "一班"
+		}]
+	}, {
+		value: "230130",
+		text: "科学社会主义",
+		children: [{
+			value: "230131",
+			text: "一班"
+		}]
+	}, {
+		value: "230140",
+		text: "和政治经济学",
+		children: [{
+			value: "230141",
+			text: "一班"
+		}]
+	}]
+}, {
+	value: '240000',
+	text: '国际学院',
+	children: [{
+		value: "240110",
+		text: "国际会计",
+		children: [{
+			value: "240111",
+			text: "一班"
+		}, {
+			value: "240112",
+			text: "二班"
+		}]
+	}, {
+		value: "240120",
+		text: "财务管理",
+		children: [{
+			value: "240121",
+			text: "一班"
+		}, {
+			value: "240122",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '250000',
+	text: '交通运输与物流学院',
+	children: [{
+		value: "250110",
+		text: "交通运输",
+		children: [{
+			value: "250111",
+			text: "一班"
+		}, {
+			value: "250112",
+			text: "二班"
+		}]
+	}, {
+		value: "250120",
+		text: "交通工程",
+		children: [{
+			value: "250121",
+			text: "一班"
+		}, {
+			value: "250122",
+			text: "二班"
+		}]
+	}, {
+		value: "250130",
+		text: "物流管理",
+		children: [{
+			value: "250131",
+			text: "一班"
+		}, {
+			value: "250132",
+			text: "二班"
+		}]
+	}, {
+		value: "250140",
+		text: "工业工程",
+		children: [{
+			value: "250141",
+			text: "一班"
+		}, {
+			value: "250142",
+			text: "二班"
+		}]
+	}]
+}, {
+	value: '260000',
+	text: '继续教育与职业技术培训学院',
+}, {
+	value: '270000',
+	text: '材料科学与工程学院',
+	children: [{
+		value: "270110",
+		text: "材料成型及控制工程",
+		children: [{
+			value: "270111",
+			text: "一班"
+		}, {
+			value: "270112",
+			text: "二班"
+		}]
+	}, {
+		value: "270120",
+		text: "高分子材料与工程",
+		children: [{
+			value: "270121",
+			text: "一班"
+		}, {
+			value: "270122",
+			text: "二班"
+		}]
+	}, {
+		value: "270130",
+		text: "应用化学",
+		children: [{
+			value: "270131",
+			text: "一班"
+		}, {
+			value: "270132",
+			text: "二班"
+		}]
+	}]
+}]

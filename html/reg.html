@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<title>注册</title>
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link href="../css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css"/>
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			.mui-input-group label {
+				width: 22%;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			.ui-alert {
+				text-align: center;
+				padding: 5px 10px;
+				font-size: 16px;
+				min-height:20px;
+			}
+			.picker-container{
+				padding:5px 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>
+		<div class="mui-content">
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label>账号</label>
+					<input id='school_id' type="text" class="mui-input-clear mui-input" placeholder="请输入学号/教工号">
+				</div>
+				<div class="mui-input-row">
+					<label>密码</label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+				<div class="mui-input-row">
+					<label>确认</label>
+					<input id='password_confirm' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+				</div>
+				<div class="mui-input-row">
+					<label>邮箱</label>
+					<input id='email' type="email" class="mui-input-clear mui-input" placeholder="请输入邮箱">
+				</div>
+				<div class="mui-input-row">
+					<label>姓名</label>
+					<input id='name' type="text" class="mui-input-clear mui-input" placeholder="请输入真实姓名">
+				</div>
+				
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						性别 (on为男性)
+						<div id="sexChange" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						教师 (on为教师登录)
+						<div id="teacherLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+				<!--学生区-->
+				<div id="studentBlock">
+					<div class="mui-input-row">
+						<label>班级</label>
+						<input id='academyMajorClassPicker' type="text" class="mui-input-clear mui-input" placeholder="选择学院专业及班级" readonly="readonly">
+					</div>
+					<div class="mui-input-row">
+						<label>生日</label>
+						<input id='birthPicker' type="text" class="mui-input-clear mui-input" placeholder="选择出生日期" readonly="readonly">
+					</div>
+					<div class="mui-input-row">
+						<label>籍贯</label>
+						<input id='birthplacePicker' type="text" class="mui-input-clear mui-input" placeholder="请选择籍贯" readonly="readonly">
+					</div>
+				</div>
+				<!--教师区-->
+				<div id="teacherBlock" class="mui-hidden"><!--class="mui-hidden"-->
+					<div class="mui-input-row">
+						<label>学院</label>
+						<input id='academyPicker' type="text" class="mui-input-clear mui-input" placeholder="请选择学院" readonly="readonly">
+					</div>
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg' data-loading-icon="mui-spinner mui-spinner-custom"  type="button" class="mui-btn mui-btn-block mui-btn-primary">注册</button>
+			</div>
+			<div class="mui-content-padded">
+				/*`name`, `sex`, `student_id`, `password`, `email`, `academy`, `major`, `class`, `birth`, `birthplace`, `current_class`, `current_table*/
+				<p>注册真实可用，注册成功后的用户可用于登录，但是示例程序并未和服务端交互，用户相关数据仅存储于本地。</p>
+			</div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script src="../js/app.js"></script>
+		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/academy.class.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../js/city.data-3.js" type="text/javascript" charset="utf-8"></script>
+		<script>
+			(function($, doc) {
+				$.init({
+					//侧滑关闭
+					swipeBack:true, //Boolean(默认false)启用右滑关闭功能
+				});
+				$.plusReady(function() {
+					// 隐藏滚动条
+					plus.webview.currentWebview().setStyle({
+						scrollIndicator: 'none'
+					});
+					var settings = app.getSettings();
+					var regButton = doc.getElementById('reg');
+					var school_idBox = doc.getElementById('school_id');
+					var passwordBox = doc.getElementById('password');
+					var passwordConfirmBox = doc.getElementById('password_confirm');
+					var emailBox = doc.getElementById('email');
+					var name=doc.getElementById('name');
+					var sex="女";
+					var studentBlock=doc.getElementById('studentBlock');
+					var teacherBlock=doc.getElementById('teacherBlock');
+					var academyPicker=doc.getElementById('academyPicker');
+					var academyPickerBox=new $.PopPicker({ layer:1 });
+					academyPickerBox.setData(academyMajorClassData);
+					var academyeResultBox=doc.getElementById('academyeResult');
+					
+					var _academy=_major=_class=birth=birthplace=null;
+					//学院、专业、班级选择器
+					var AMClassPicker=doc.getElementById('academyMajorClassPicker');
+					var AMClassPickerBox = new $.PopPicker({
+						layer: 3
+					});
+					AMClassPickerBox.setData(academyMajorClassData);
+					// H5 模式的日期选择器
+					var birthPicker=doc.getElementById('birthPicker');
+					// 籍贯选择器				
+					var birthplacePicker=doc.getElementById('birthplacePicker');
+					var birthplaceBox=new $.PopPicker({
+						layer: 3
+					});
+					birthplaceBox.setData(cityData3);
+					
+					AMClassPicker.addEventListener('tap',function(event){
+						AMClassPickerBox.show(function(items){
+							_academy=items[0].text;
+							_major=items[1].text;
+							_class=items[2].text;
+							AMClassPicker.value=_academy+' '+_major+' '+_class;
+						});
+					});
+					academyPicker.addEventListener('tap',function(event){
+						academyPickerBox.show(function(items){
+							_academy=items[0].text;
+							academyPicker.value=_academy;
+						});
+					});
+					birthPicker.addEventListener('tap',function(){
+						var options={
+							"type":"date",
+							"beginYear":1990,
+							"endYear":2016
+						}
+						var picker = new $.DtPicker(options);
+						picker.show(function(rs){
+							birth=rs.text;
+							birthPicker.value=birth;
+							//picker.dispose();
+						});
+					},false);
+					birthplacePicker.addEventListener('tap',function(event){
+						birthplaceBox.show(function(items){
+							birthplace=items[0].text+' '+items[1].text+' '+items[2].text;
+							birthplacePicker.value=birthplace;
+						});
+					});
+					//性别切换
+					doc.getElementById("sexChange").addEventListener("toggle",function(event){
+						if(event.detail.isActive){
+							sex="男";
+						}else{
+							sex="女";
+						}
+					});
+					//教师与学生注册切换
+					function setIdentity(a){
+						plus.storage.setItem("identity",a);
+					}
+					setIdentity("student");
+					doc.getElementById("teacherLogin").addEventListener("toggle",function(event){
+					  if(event.detail.isActive){
+					  	teacherBlock.classList.remove('mui-hidden');
+					    studentBlock.classList.add('mui-hidden');
+					    setIdentity("teacher");
+					  }else{
+					    studentBlock.classList.remove('mui-hidden');
+					    teacherBlock.classList.add('mui-hidden'); 
+					    setIdentity("student");
+					  }
+					  regButton.removeAttribute("disabled");
+					});
+					
+					//注册
+					regButton.addEventListener('tap', function(event) {
+						//防止点击多次注册，不用this是因为this指针变化了
+						regButton.setAttribute("disabled",true);	
+						var regInfo = {
+							identity:plus.storage.getItem('identity'),
+							school_id: school_idBox.value,
+							password: passwordBox.value,
+							email: emailBox.value,
+							name:name.value,
+							sex:sex,
+							_academy:_academy,
+							_major:_major,
+							_class:_class,
+							birth:birth,
+							birthplace:birthplace
+						};
+						plus.nativeUI.showWaiting();
+						var passwordConfirm = passwordConfirmBox.value;
+						if (passwordConfirm != regInfo.password) {
+							plus.nativeUI.toast('密码两次输入不一致');
+							//释放注册按钮
+							regButton.removeAttribute("disabled");
+							plus.nativeUI.closeWaiting();
+							return;
+						}
+						app.reg(regInfo, function(err) {
+							if (err) {
+								console.log(err);
+								plus.nativeUI.toast(err);
+								regButton.removeAttribute("disabled");
+								plus.nativeUI.closeWaiting();
+								return;
+							}
+							
+							plus.nativeUI.toast('注册成功');
+							regButton.removeAttribute("disabled");
+							plus.nativeUI.closeWaiting();
+							/*
+							 * 注册成功后，直接显示登录页即可；
+							 */
+							//plus.webview.getLaunchWebview().show("pop-in",200,function () {
+								
+							//});
+							//打开登录页
+							setTimeout(function(){
+								plus.webview.currentWebview().close("none");
+								$.openWindow({
+									url: 'login.html',
+									id: 'login',
+									show: {
+										aniShow: 'pop-in'
+									}
+								});
+							}, 1000);
+							
+						});
+					});
+				});
+			}(mui, document));
+		</script>
+	</body>
+
+</html>
