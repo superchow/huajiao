@@ -9,7 +9,7 @@ $school_id=$_POST['school_id'];
 $password=$_POST['password'];
 //$myDB=new DB($identity);
 //$result=$myDB->find("select * from '$identity' where school_id='$school_id' and password='$password'");
-$conn = mysqli_connect('127.0.0.1','root','','zwz');
+$conn = mysqli_connect('127.0.0.1','root','','huajiao');
 $sql = "SET NAMES UTF8";
 mysqli_query($conn,$sql);
 $sql = "select * from $identity where school_id='$school_id' and password='$password'";

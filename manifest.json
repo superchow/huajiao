@@ -5,7 +5,7 @@
 		"iPad"
 	],
 	"id": "H539211B3",/*应用的标识，创建应用时自动生成，勿手动修改*/
-	"name": "huajiao-1",/*应用名称，程序桌面图标名称*/
+	"name": "花椒在线",/*应用名称，程序桌面图标名称*/
 	"version": {
 		"name": "1.0.0",/*应用版本名称*/
 		"code": "83"
@@ -16,8 +16,8 @@
 	},
 	"launch_path": "guide.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
 	"developer": {
-		"name": "",/*开发者名称*/
-		"email": "",/*开发者邮箱地址*/
+		"name": "周卫忠",/*开发者名称*/
+		"email": "2665752129@qq.com",/*开发者邮箱地址*/
 		"url": "http://www.dcloud.io"
 	},
 	"permissions": {
@@ -51,12 +51,8 @@
 			"description": "使用Native.js能力"
 		},
 
-		"Orientation": {
-			"description": "访问方向感应器"
-		},
-		"Proximity": {
-			"description": "访问距离感应器"
-		},
+		
+		
 		"Storage": {
 			"description": "管理应用本地数据"
 		},
@@ -82,7 +78,7 @@
 		"Webview": {},
 		"NativeUI": {},
 		"Navigator": {},
-		"NativeObj": {},"Share":{},"OAuth":{},"Device":{}
+		"NativeObj": {},"Device":{},"Messaging":{},"Push":{},"Share":{}
 	},
 	"plus": {
 		"splashscreen": {
@@ -105,7 +101,7 @@
 				"keystore": "",/*Android应用打包使用的密钥库文件*/
 				"password": "",/*Android应用打包使用密钥库中证书的密码*/
 				"aliasname": "",/*Android应用打包使用密钥库中证书的别名*/
-				"permissions": ["<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>"]
+				"permissions": ["<uses-permission android:name=\"com.android.launcher.permission.INSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.SEND_SMS\"/>","<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>","<uses-permission android:name=\"android.permission.VIBRATE\"/>","<uses-permission android:name=\"android.permission.ACCESS_NETWORK_STATE\"/>","<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>","<uses-permission android:name=\"android.permission.CALL_PHONE\"/>","<uses-permission android:name=\"android.permission.WRITE_SMS\"/>","<uses-permission android:name=\"android.permission.ACCESS_WIFI_STATE\"/>","<uses-permission android:name=\"com.android.launcher.permission.UNINSTALL_SHORTCUT\"/>","<uses-permission android:name=\"android.permission.READ_SMS\"/>"]
 			},
 			"orientation": [
 				"portrait-primary",
@@ -211,7 +207,8 @@
 				],
 				"refer": [
 					"setting.html",
-					"html/setting.html"
+					"html/setting.html",
+					"main-menu.html"
 				],
 				"priority": 1
 			},
@@ -287,7 +284,8 @@
 					"js/mui.min.js",
 					"css/mui.min.css",
 					"images/guide-3.png",
-					"DB/login.php"
+					"DB/login.php",
+					"js/app.js"
 				],
 				"refer": [
 					"main.html",
@@ -331,7 +329,20 @@
 			},
 			"html/forget_password.html": {
 				"resources": [
-					"fonts/mui.ttf"
+					"fonts/mui.ttf",
+					"js/app.js",
+					"js/mui.min.js",
+					"css/mui.min.css",
+					"css/style.css"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"main-menu.html": {
+				"resources": [
+					"js/mui.min.js",
+					"fonts/mui.ttf",
+					"css/mui.min.css"
 				],
 				"refer": [],
 				"priority": 0

@@ -2,12 +2,14 @@
 	"main.html": {
 		"refer": [
 			"setting.html",
-			"html/setting.html"
+			"html/setting.html",
+			"main-menu.html"
 		],
 		"resources": [
 			"js/app.js",
 			"js/mui.min.js",
-			"css/mui.min.css"
+			"css/mui.min.css",
+			"fonts/mui.ttf"
 		]
 	},
 	"login.html": {
@@ -52,7 +54,8 @@
 			"js/mui.min.js",
 			"css/mui.min.css",
 			"images/guide-3.png",
-			"DB/login.php"
+			"DB/login.php",
+			"js/app.js"
 		],
 		"refer": [
 			"main.html",
@@ -94,7 +97,18 @@
 	},
 	"html/forget_password.html": {
 		"resources": [
-			"fonts/mui.ttf"
+			"fonts/mui.ttf",
+			"js/app.js",
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"css/style.css"
+		]
+	},
+	"main-menu.html": {
+		"resources": [
+			"js/mui.min.js",
+			"fonts/mui.ttf",
+			"css/mui.min.css"
 		]
 	}
 }

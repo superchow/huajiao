@@ -8,7 +8,7 @@
 		public $table;
 		public function __construct($table){
 			$this->table = $table;
-			$this->conn = mysqli_connect("localhost","root","","zwz");
+			$this->conn = mysqli_connect("localhost","root","","huajiao");
 			mysqli_query($this->conn,"set names utf8");
 		}
 		//查询一条

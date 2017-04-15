@@ -9,6 +9,7 @@ $identity=$_POST['identity'];
 $school_id=$_POST['school_id'];
 $password=$_POST['password'];
 $name=$_POST['name'];
+$phone=$_POST['phone'];
 $sex=$_POST['sex'];
 $email=$_POST['email'];
 $academy=$_POST['_academy'];
@@ -27,6 +28,7 @@ if($result['school_id']>0){
 	$data["school_id"]=$school_id;
 	$data["password"]=$password;
 	$data["name"]=$name;
+	$data["phone"]=$phone;
 	$data["sex"]=$sex;
 	$data["email"]=$email;
 	$data["academy"]=$academy;
