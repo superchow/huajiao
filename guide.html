@@ -42,6 +42,7 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
+		<script src="js/app.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			mui.init();
 			mui('.mui-slider').slider({
@@ -55,21 +56,18 @@
 			 		
 			 	}
 			},false);
-			var toMain=function(data){
+			var users = JSON.parse(localStorage.getItem('$users') || '[]');
+			var toMain=function(){
 				mui.openWindow({
 					url:"main.html",
 					id:"mian",
-					preload:true,
 					waiting:{
 						autoShow:false
-					},
-					extras:{
-						info:data
-					}
+					}					
 				});
 			};
 			//设置网路地址
-			localStorage.setItem("url","http://192.168.1.105:8081/huajiao1/");
+			localStorage.setItem("url","http://192.168.1.118/huajiao/");
 			var autoLogin=function(a,b,c){
 				var url=localStorage.getItem("url");
 				mui.ajax(url+'DB/login.php',{
@@ -85,75 +83,81 @@
 					//headers:{'Content-Type':'application/json'},	              
 					success:function(data){
 						//服务器返回响应，根据响应结果，分析是否登录成功；
-						if(data.msg=="faile"){
+						if(data.msg=="faile" || data==='null'){
 							console.log(JSON.stringify(data));
-							mui.openWindow({id:'login'});
+							setTimeout(function(){
+								mui.openWindow({id:'login'});
+							},200);							
 							return;
-						}
-						if(data==='null'){
-							mui.openWindow({id:"login"});
-							return;
-						}
-						console.log(JSON.stringify(data));
-						toMain(data);
+						}						
+						users=app.joinJSON(users, data);
+						localStorage.setItem('$users', JSON.stringify(users));
+						toMain();
 					},
 					error:function(xhr,type,errorThrown){
 						//异常处理；
 						//mui.toast('网络连接失败，请检查网络设置');						
 						if(type=='timeout') {
-              mui.toast("请求超时：请检查网络")
-            } else {
-            	//console.log(xhr);
-            	//console.log(type);
-            	//console.log(errorThrown)
-              mui.toast('请求失败：' + type + '\n err:' + errorThrown);
-            }
+			              	mui.toast("请求超时：请检查网络")
+			            } else {
+			            	//console.log(xhr);
+			            	//console.log(type);
+			            	//console.log(errorThrown)
+			              	mui.toast('请求失败：' + type + '\n err:' + errorThrown);
+			            }
 					}
 				});
 			}
 			
 			mui.plusReady(function(){
+				//调整图片
 				var h = window.innerHeight;
 				var imgs=document.querySelectorAll("img");
 				mui.each(imgs,function(){
 					this.style.height=h+"px";
 				});
+								
+				var guideView = plus.webview.currentWebview();
 				document.querySelector('button').addEventListener("tap",function(){
-					plus.storage.setItem("IsFrist", "true");
+					localStorage.setItem("IsFrist", "true");
 					loginviewShow.show("slide-in-right",150);
-					plus.webview.currentWebview().close();
+					guideView.close();
 				},false);
-				plus.storage.setItem('identity',"student");
-				plus.storage.setItem('school_id',"2013061011218");
-				plus.storage.setItem('password',"7913086zwz");
-				//登录判断
-				(function(){
-					var IsFrist=plus.storage.getItem("IsFrist");
-					if(IsFrist){
-						var identity=plus.storage.getItem('identity') || '';
-						var schoolId=plus.storage.getItem("school_id") || '';
-						var password=plus.storage.getItem("password") || '';
-						if(identity && schoolId && password){
-							autoLogin(identity,schoolId,password);
-						}else{
-							loginviewShow.show("slide-in-right",150);
-						}	
-					}
-				})(mui,document);
-							
 				//初次登陆
 				var loginviewShow=mui.preload({
-			    url:"login.html",
-			    id:"login",//默认使用当前页面的url作为id
-			    waiting: {
-						autoShow: false
-					},
-			    show:{
-			    	aniShow:"pop-in",//页面显示动画，默认为”slide-in-right“； 
-			    }
-			    
+				    url:"login.html",
+				    id:"login",//默认使用当前页面的url作为id
+				    waiting: {
+							autoShow: false,
+						},
+				    show:{
+				    	aniShow:"pop-in",//页面显示动画，默认为”slide-in-right“； 
+				    	event:"loaded"
+				    }			    
 				});
-			
+				
+				//登录判断
+				(function(){ 
+					var IsFrist=localStorage.getItem("IsFrist") || '';
+					var autoLoginState = app.getSettings().autoLogin || '';
+					if(IsFrist){						
+						var identity=users.identity || '',
+							schoolId=users.school_id || '',
+							password=users.password || '';
+						if(autoLoginState && identity && schoolId && password){
+							autoLogin(identity,schoolId,password);
+						}else{
+							setTimeout(function(){//采用定时器，避免白屏
+								loginviewShow.show("slide-in-right",150);
+							},100);							
+						}	
+					}
+				})(mui,document);	
+				// 获取所有Webview窗口
+				var wvs=plus.webview.all();
+				for(var i=0;i<wvs.length;i++){
+					console.log("webview"+i+": "+wvs[i].getURL());
+				}
 		});
 			
 		</script>
