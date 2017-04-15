@@ -95,8 +95,8 @@
 		<div class="mui-content">
 			<form id='login-form' class="mui-input-group">
 				<div class="mui-input-row">
-					<label>学号</label>
-					<input id='student_id' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+					<label>账号</label>
+					<input id='school_id' type="number" class="mui-input-clear mui-input" placeholder="请输入学号/教工号">
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
@@ -104,6 +104,14 @@
 				</div>
 			</form>
 			<form class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						教师登录
+						<div id="teacherLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
 				<ul class="mui-table-view mui-table-view-chevron">
 					<li class="mui-table-view-cell">
 						自动登录
@@ -128,26 +136,34 @@
 				$.init({
 					statusBarBackground: '#f7f7f7'
 				});
-				$.plusReady(function(){
+				$.plusReady(function(){				
+					//仅支持竖屏显示
 					plus.screen.lockOrientation("portrait-primary");
 					var settings = app.getSettings();
 					var state = app.getState();
+					//本地获取用户信息
+					var users = JSON.parse(localStorage.getItem('$users') || '[]');
 					var mainPage = $.preload({
 						"id": 'main',
 						"url": 'main.html'
 					});
 					var main_loaded_flag = false;
 					mainPage.addEventListener("loaded",function () {
+						console.log("主界面加载完毕");
 						main_loaded_flag = true;
 					});
 					var toMain = function() {
-						//使用定时器的原因：
-						//可能执行太快，main页面loaded事件尚未触发就执行自定义事件，此时必然会失败
+						/* 使用定时器的原因：
+						 * 可能执行太快，main页面loaded事件尚未触发就执行自定义事件，此时必然会失败
+						 * 但是页面在重新加载(开发)时，会失败
+						 * 故增加plus.webview.getWebviewById('main')进行判断
+						 */						
 						var id = setInterval(function () {
-							if(main_loaded_flag){
+							if(main_loaded_flag || plus.webview.getWebviewById('main')){								
 								clearInterval(id);
 								$.fire(mainPage, 'show', null);
 								mainPage.show("pop-in");
+								return ;
 							}
 						},20);
 					};
@@ -172,29 +188,40 @@
 						plus.navigator.closeSplashscreen();
 					}, 600);
 					//检查 "登录状态/锁屏状态" 结束
-					var loginButton = doc.getElementById('login');
-					var student_idBox = doc.getElementById('student_id');
-					var passwordBox = doc.getElementById('password');
-					var autoLoginButton = doc.getElementById("autoLogin");
-					var regButton = doc.getElementById('reg');
-					var forgetButton = doc.getElementById('forgetPassword');
+					var loginButton = doc.getElementById('login'),
+						school_idBox = doc.getElementById('school_id'),
+						passwordBox = doc.getElementById('password'),
+						autoLoginButton = doc.getElementById("autoLogin"),
+						teacherLoginButton = doc.getElementById('teacherLogin'),
+						regButton = doc.getElementById('reg'),
+						forgetButton = doc.getElementById('forgetPassword');
+					
+					if(!settings.autoLogin){//未设置自动登录
+						school_idBox.value = users.school_id || '';
+						passwordBox.value  = users.password || ''; 
+					}
 					loginButton.addEventListener('tap', function(event) {
 						var loginInfo = {
-							student_id: student_idBox.value,
+							identity: settings.teacherLogin ? "teacher" : "student",
+							school_id: school_idBox.value,
 							password: passwordBox.value
 						};
+						plus.nativeUI.showWaiting();
 						app.login(loginInfo, function(err) {
+							plus.nativeUI.closeWaiting();
 							if (err) {
+								console.log("错误"+err)
 								plus.nativeUI.toast(err);
 								return;
 							}
 							toMain();
 						});
 					});
-					$.enterfocus('#login-form input', function() {
+					$.enterfocus('#login-form input', function() {//键盘处理
 						$.trigger(loginButton, 'tap');
 					});
-					autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active')
+					//开关
+					autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
 					autoLoginButton.addEventListener('toggle', function(event) {
 						setTimeout(function() {
 							var isActive = event.detail.isActive;
@@ -202,22 +229,33 @@
 							app.setSettings(settings);
 						}, 50);
 					}, false);
+					teacherLoginButton.classList[settings.teacherLogin ? 'add' : 'remove']('mui-active');
+					teacherLoginButton.addEventListener('toggle', function(event) {
+						setTimeout(function() {
+							var isActive = event.detail.isActive;
+							settings.teacherLogin = isActive;
+							app.setSettings(settings);
+						}, 50);
+					}, false);
+					//注册与忘记密码
 					regButton.addEventListener('tap', function(event) {
-						$.openWindow({
-							url: 'html/reg.html',
-							id: 'reg',
-							preload: true,
-							show: {
-								aniShow: 'pop-in',
-								duration:300
-							},
-							styles: {
-								popGesture: 'hide'
-							},
-							waiting: {
-								autoShow: true
-							}
-						});
+						setTimeout(function(){//尽量避免切页白屏
+							$.openWindow({
+								url: 'html/reg.html',
+								id: 'reg',
+								show: {
+									aniShow: 'pop-in',
+									duration:150,
+									event: 'loaded'
+								},
+								styles: {
+									popGesture: 'hide'
+								},
+								waiting: {
+									autoShow: true
+								}
+							});
+						},300);
 					}, false);
 					forgetButton.addEventListener('tap', function(event) {
 						$.openWindow({
@@ -236,7 +274,11 @@
 							}
 						});
 					}, false);
-					
+					// 获取所有Webview窗口
+					var wvs=plus.webview.all();
+					for(var i=0;i<wvs.length;i++){
+						console.log("webview"+i+": "+wvs[i].getURL());
+					}
 					//监听物理返回键
 					var backButtonPress = 0;
 					$.back = function(event) {
@@ -252,7 +294,7 @@
 						return false;
 					};
 				});
-			}(mui, document));
+			}(mui, document));			
 		</script>
 	</body>
 
