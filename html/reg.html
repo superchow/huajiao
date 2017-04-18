@@ -127,6 +127,7 @@
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.enterfocus.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/app.js"></script>
 		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../js/academy.class.js" type="text/javascript" charset="utf-8"></script>
@@ -136,6 +137,13 @@
 				$.init({
 					//侧滑开启
 					swipeBack:true, //Boolean(默认false)启用右滑关闭功能
+				});
+				//让当前页面所有input失去焦点,关闭软键盘
+				function pickerBlur(){
+					document.activeElement.blur(); 
+				};
+				$.enterfocus('.mui-input-group input', function() {//键盘处理
+					$.trigger(loginButton, 'tap');
 				});
 				$.plusReady(function() {
 					// 隐藏滚动条
@@ -176,37 +184,49 @@
 					birthplaceBox.setData(cityData3);
 					
 					AMClassPicker.addEventListener('tap',function(event){
-						AMClassPickerBox.show(function(items){
-							_academy=items[0].text;
-							_major=items[1].text;
-							_class=items[2].text;
-							AMClassPicker.value=_academy+' '+_major+' '+_class;
-						});
+						pickerBlur();
+						setTimeout(function(){
+							AMClassPickerBox.show(function(items){
+								_academy=items[0].text;
+								_major=items[1].text;
+								_class=items[2].text;
+								AMClassPicker.value=_academy+' '+_major+' '+_class;
+							});
+						},500);						
 					});
 					academyPicker.addEventListener('tap',function(event){
-						academyPickerBox.show(function(items){
-							_academy=items[0].text;
-							academyPicker.value=_academy;
-						});
+						pickerBlur();
+						setTimeout(function(){
+							academyPickerBox.show(function(items){
+								_academy=items[0].text;
+								academyPicker.value=_academy;
+							});
+						},500);						
 					});
 					birthPicker.addEventListener('tap',function(){
+						pickerBlur();
 						var options={
 							"type":"date",
 							"beginYear":1990,
 							"endYear":2016
 						}
-						var picker = new $.DtPicker(options);
-						picker.show(function(rs){
-							birth=rs.text;
-							birthPicker.value=birth;
-							//picker.dispose();
-						});
+						setTimeout(function(){
+							var picker = new $.DtPicker(options);
+							picker.show(function(rs){
+								birth=rs.text;
+								birthPicker.value=birth;
+								//picker.dispose();
+							});
+						},500);						
 					},false);
 					birthplacePicker.addEventListener('tap',function(event){
-						birthplaceBox.show(function(items){
-							birthplace=items[0].text+' '+items[1].text+' '+items[2].text;
-							birthplacePicker.value=birthplace;
-						});
+						pickerBlur();
+						setTimeout(function(){
+							birthplaceBox.show(function(items){
+								birthplace=items[0].text+' '+items[1].text+' '+items[2].text;
+								birthplacePicker.value=birthplace;
+							});
+						},500)						
 					});
 					//性别切换
 					doc.getElementById("sexChange").addEventListener("toggle",function(event){
