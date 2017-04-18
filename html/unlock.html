@@ -88,7 +88,7 @@
 					locker.addEventListener('done', function(event) {
 						var rs = event.detail;
 						if (settings.gestures == rs.points.join('')) {
-							toMain()
+							toMain();
 							rs.sender.clear();
 						} else {
 							tryNumber--;
