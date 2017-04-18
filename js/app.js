@@ -6,8 +6,9 @@
 (function($, owner) {
 	//获取网址
 	var url=localStorage.getItem("url");
+	//owner.url = url;
 	//获取本地用户信息
-	var users = JSON.parse(localStorage.getItem('$users') || '[]');
+	var users = JSON.parse(localStorage.getItem('$users') || "{}");
 	/**
 	 * 用户登录
 	 **/
@@ -38,13 +39,11 @@
 			//headers:{'Content-Type':'application/json'},服务器设置错误,故注释掉	              
 			success:function(data){
 				//服务器返回响应，根据响应结果，分析是否登录成功；
-				console.log("输出"+JSON.stringify(data));
 				if(data.msg=="faile" || data==='null'){
 					return callback('用户名或密码错误');
 				}
-				var _data= joinJson(loginInfo, data)
-				users= joinJson(users, _data);				
-				console.log("输出"+JSON.stringify(users));
+				var _data= joinJson(loginInfo, data);				
+				users= joinJson(users, _data);								
 				localStorage.setItem('$users', JSON.stringify(users));
 				return callback();
 			},
@@ -272,7 +271,9 @@
 	 * @description 合并JSON对象
 	 **/
 	var joinJson = function (JSONIn, JSONStr) {
-		JSONIn = JSONIn || {};
+		if(JSONIn instanceof Array){
+			JSONIn = {};
+		}
 		if(typeof(JSONIn)=="string"){
 			JSONIn = JSON.parse(JSONIn); 
 		}
