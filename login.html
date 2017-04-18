@@ -142,7 +142,7 @@
 					var settings = app.getSettings();
 					var state = app.getState();
 					//本地获取用户信息
-					var users = JSON.parse(localStorage.getItem('$users') || '[]');
+					var users = JSON.parse(localStorage.getItem('$users') || '{}');
 					var mainPage = $.preload({
 						"id": 'main',
 						"url": 'main.html'
@@ -165,8 +165,23 @@
 								mainPage.show("pop-in");
 								return ;
 							}
-						},20);
+						},100);
 					};
+					/******************测试用*****************/
+					plus.webview.currentWebview().addEventListener("close",function(){
+						console.log(plus.webview.currentWebview().id+"关闭了");
+					},false);
+					plus.webview.currentWebview().addEventListener("hide",function(){
+						console.log(plus.webview.currentWebview().id+"隐藏了");
+					},false);
+					/**************************************/
+					/************************************/
+					// 获取所有Webview窗口
+					var wvs=plus.webview.all();
+					for(var i=0;i<wvs.length;i++){
+						console.log("webview"+i+": "+wvs[i].id);
+					}
+					/************************************/
 					//检查 "登录状态/锁屏状态" 开始
 					if (settings.autoLogin && state.token && settings.gestures) {
 						$.openWindow({
@@ -273,12 +288,7 @@
 								autoShow: true
 							}
 						});
-					}, false);
-					// 获取所有Webview窗口
-					var wvs=plus.webview.all();
-					for(var i=0;i<wvs.length;i++){
-						console.log("webview"+i+": "+wvs[i].getURL());
-					}
+					}, false);					
 					//监听物理返回键
 					var backButtonPress = 0;
 					$.back = function(event) {
