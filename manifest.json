@@ -203,7 +203,8 @@
 					"css/mui.min.css",
 					"fonts/mui.ttf",
 					"js/mui.min.js",
-					"js/app.js"
+					"js/app.js",
+					"html/task.html"
 				],
 				"refer": [
 					"setting.html",
@@ -304,7 +305,8 @@
 					"js/mui.picker.min.js",
 					"css/mui.picker.min.css",
 					"js/city.data-3.js",
-					"login.html"
+					"login.html",
+					"js/mui.enterfocus.js"
 				],
 				"refer": [],
 				"priority": 0
@@ -342,6 +344,61 @@
 				"resources": [
 					"js/mui.min.js",
 					"fonts/mui.ttf",
+					"css/mui.min.css"
+				],
+				"refer": [
+					"html/related.html",
+					"html/task.html",
+					"html/self-center.html",
+					"html/class-members.html",
+					"html/daily-task.html",
+					"html/submit-task.html"
+				],
+				"priority": 0
+			},
+			"html/task.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css",
+					"fonts/mui.ttf"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/self-center.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/class-members.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/related.html": {
+				"resources": [
+					"js/mui.min.js"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/daily-task.html": {
+				"resources": [
+					"js/mui.min.js",
+					"css/mui.min.css"
+				],
+				"refer": [],
+				"priority": 0
+			},
+			"html/submit-task.html": {
+				"resources": [
+					"js/mui.min.js",
 					"css/mui.min.css"
 				],
 				"refer": [],
