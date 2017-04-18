@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
-
+		
 		<style>
 			ul {
 				font-size: 14px;
@@ -15,82 +15,272 @@
 			.mui-btn {
 				padding: 10px;
 			}
+			.mui-content>.mui-table-view:first-child {
+				margin-top: 1px;
+			}
 		</style>
 	</head>
 
 	<body>
 		<header class="mui-bar mui-bar-nav" style="padding-right: 15px;">
-			<h1 class="mui-title">登录模板</h1>
-			<button id='setting' class=" mui-pull-right mui-btn-link">设置</button>
+			<a id="menu" class="mui-icon mui-icon-bars mui-pull-left"></a>
+			<h1 class="mui-title">花椒在线</h1>
+			<a id="share" class="mui-icon mui-icon-paperplane mui-pull-right"></a>
 		</header>
-		<div class="mui-content">
-			<div class="mui-content-padded">
-				<p>
-					您好 <span id='account'></span>，您已成功登录。
-					<ul>
-						<li>这是mui带登录和设置模板的示例App首页。</li>
-						<li>您可以点击右上角的 “设置” 按钮，进入设置模板，体验div窗体切换示例。</li>
-						<li>在 “设置” 中点击 “退出” 可以 “注销当前账户” 或 “直接关闭应用”。</li>
-						<li>你可以设置 “锁屏图案”，这样可通过手势密码代替输入账号、密码；</li>
-					</ul>
-				</p>
-				<button  class="mui-btn mui-btn-block mui-btn-primary">设置</button>				
-				<button id='exit' class="mui-btn mui-btn-block mui-btn-green">关闭</button>
-        <button id='logout' class="mui-btn mui-btn-red mui-btn-block">注销登录</button>
-                
-			</div>
-		</div>
+		<div class="mui-content"></div>
 		<script src="js/mui.min.js"></script>
 		<script src="js/app.js"></script>
 		<script>
-			(function($, doc) {
-				$.init();
-				var settings = app.getSettings();
-				var account = doc.getElementById('account');
-				//
-				window.addEventListener('show', function() {
-					var state = app.getState();
-					account.innerText = state.account;
-				}, false);
-				$.plusReady(function() {
-					var settingPage = $.preload({
-						"id": 'setting',
-						"url": 'html/setting.html'
-					});
-					//设置
-					var settingButton = doc.getElementById('setting');
-					//settingButton.style.display = settings.autoLogin ? 'block' : 'none';
-					settingButton.addEventListener('tap', function(event) {
-						$.openWindow({
-							id: 'setting',
-							show: {
-								aniShow: 'pop-in'
-							},
-							styles: {
-								popGesture: 'hide'
-							},
-							waiting: {
-								autoShow: false
-							}
-						});
-					});
-					//--
-					$.oldBack = mui.back;
-					var backButtonPress = 0;
-					$.back = function(event) {
-						backButtonPress++;
-						if (backButtonPress > 1) {
-							plus.runtime.quit();
-						} else {
-							plus.nativeUI.toast('再按一次退出应用');
-						}
-						setTimeout(function() {
-							backButtonPress = 0;
-						}, 1000);
-						return false;
-					};
+			mui.init({
+				gestureConfig:{
+					doubletap:true
+				},
+				subpages:[{
+					url:'html/task.html',
+					id:'task',
+					styles:{
+						top: '45px',
+						bottom: '0px',
+						width: '100%',
+						height: '100%'
+					}
+				}],
+				statusBarBackground: '#f7f7f7',
+			});
+			var settings = app.getSettings(),
+				state = app.getState();
+				//url = app.url;
+			var aniShow = "pop-in";
+			var menu = null,
+				contentWebview = null,
+				maskHas = maskShow = false;				 
+			var self;
+			
+			var users = JSON.parse(localStorage.getItem('$users') || '{}');
+			//只有ios支持的功能需要在Android平台隐藏；
+			if(mui.os.android) {
+				var list = document.querySelectorAll('.ios-only');
+				if(list) {
+					for(var i = 0; i < list.length; i++) {
+						list[i].style.display = 'none';
+					}
+				}
+				//Android平台暂时使用slide-in-right动画
+				if(parseFloat(mui.os.version) < 4.4) {
+					aniShow = "slide-in-right";
+				}
+			}
+			//初始化，并预加载webview模式的选项卡			
+			function preload() {	
+				var menu_style = {
+					left: "-70%",
+					width: '70%',
+					popGesture: "none",
+					render:"always"
+				};	
+				if(mui.os.ios) {
+					menu_style.zindex = -1;
+				}	
+				//处理侧滑导航，为了避免和子页面初始化等竞争资源，主页面show后加载侧滑页面；
+				menu = mui.openWindow({
+					id: 'main-menu',
+					url: 'main-menu.html',
+					styles: menu_style,
+					show: {
+						autoShow:true,
+						aniShow: 'none'
+					},
+					waiting: {
+						autoShow: false
+					}
 				});
-			}(mui, document));
+			};
+			// 关闭webview以及数据获取
+			function _show(){
+				// 查找应用需要关闭窗口对象,并关闭
+				var webwiewArray=plus.webview.all();
+				//mui("#pullrefresh").pullRefresh().pulldownLoading();//进入后立即刷新数据
+				changeImg();
+				dragg();
+			};
+			
+			mui.plusReady(function() {
+				//仅支持竖屏显示
+				plus.screen.lockOrientation("portrait-primary");				
+				self = plus.webview.currentWebview();					
+				/******************测试用*****************/
+				plus.webview.currentWebview().addEventListener("close",function(){
+					console.log(plus.webview.currentWebview().id+"关闭了");
+				},false);
+				plus.webview.currentWebview().addEventListener("hide",function(){
+					console.log(plus.webview.currentWebview().id+"隐藏了");
+				},false);
+				// 获取所有Webview窗口
+				var wvs=plus.webview.all();
+				for(var i=0;i<wvs.length;i++){
+					console.log("webview"+i+": "+wvs[i].id);
+				}
+				/************************************/
+			});			
+			function changeImg() {//修改头像
+				preload();					
+				mui.fire(menu, "imgInfo", {
+					src:users.img || "http://192.168.1.115/img/user.jpg"
+				});
+			};
+			function dragg() {//窗口滑动操作事件
+				self.drag({
+					direction: "right",
+					moveMode: "followFinger"
+				}, {
+					view: menu,
+					moveMode: "follow"
+				}, function(e) {
+					if(e.type =="end" && e.direction == "ltr" && e.result == true){
+						if(contentWebview==null){
+							contentWebview = plus.webview.currentWebview().children()[0];
+							console.log(contentWebview.id);
+						}
+						maskToggle();
+						console.log("main窗口打开了菜单");
+					}					
+				}.bind(this));
+			};		
+			
+			var menu_btn = document.getElementById('menu'),
+				share_btn = document.getElementById('share');
+			//标题栏事件的绑定			
+			document.querySelector('header').addEventListener('doubletap',function () {
+				if(contentWebview==null){
+					contentWebview = plus.webview.currentWebview().children()[0];
+					console.log(contentWebview.id);
+				}
+				contentWebview.evalJS("mui('#pullrefresh').pullRefresh().scrollTo(0,0,100)");
+			});
+			menu_btn.addEventListener("tap",function(){
+				if(!menu){//防止打开空白的webview
+					menu = plus.webview.getWebviewById("main-menu");
+				}
+				if(contentWebview==null){
+					contentWebview = plus.webview.currentWebview().children()[0];
+				}
+				if(parseInt(self.getStyle().left) > 0){//判断菜单是否打开					
+					closeMenu(menu);
+				}else{
+					openMenu(menu);
+				}
+			}, false);
+			share_btn.addEventListener("tap",function(){
+				mui.toast("点我干嘛！还未完成")
+			}, false);	
+			// 创建遮罩并监听
+			function maskToggle (){	
+				if(!maskShow){
+					self.setStyle({mask:"rgba(0,0,0,.3)"});
+					maskShow = true;
+					console.log("打开~");
+				}else{
+					maskShow = false;
+					console.log("关闭~");
+					self.setStyle({mask:"none"});
+				}
+				if(!maskHas){//只注册一次
+					maskHas = true;//表示遮罩创建了
+					// 用户点击Webview窗口后关闭遮罩与菜单
+					console.log(self.id);
+					self.addEventListener("maskClick",function(){
+						maskToggle();
+						closeMenu();
+						console.log("点击了遮罩");
+					},false);
+				}				
+			}
+			/**
+			 * 显示侧滑菜单
+			 */
+			function openMenu(me) {
+				!maskShow&&maskToggle();
+				//若不传值，引用全局的menu
+				menu = me || menu || plus.webview.getWebviewById("main-menu");
+				plus.webview.startAnimation({//Webview窗口组合动画
+						'view': self,
+						'styles': {
+							'fromLeft': '0',
+							'toLeft': "70%"
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "-70%",
+							'toLeft': '0'
+						},
+						'action': 'show'
+					},
+					function(e) {
+						if(e.id == self.id) { //侧滑菜单打开,遮罩蒙板	
+							console.log("打开")
+						}
+					}.bind(this)
+				)
+			};
+			/**
+			 * 关闭菜单
+			 */
+			function closeMenu(me) {
+				//若不传值，引用全局的menu
+				menu = me || menu || plus.webview.getWebviewById("main-menu");
+				if(!parseInt(self.getStyle().left)){
+					return;
+				}
+				if(contentWebview==null){
+					contentWebview = plus.webview.currentWebview().children()[0];
+				}
+				//遮罩显示就去关闭
+				maskShow&&maskToggle();
+				plus.webview.startAnimation({
+						'view': self,
+						'styles': {
+							'fromLeft': '70%',
+							'toLeft': "0"
+						},
+						'action': 'show'
+					}, {
+						'view': menu,
+						'styles': {
+							'fromLeft': "0",
+							'toLeft': '-70%'
+						},
+						'action': 'show'
+					},
+					function(e) {
+						//console.log(JSON.stringify(e));
+						if(e.id == self.id) {}
+					}.bind(this)
+				)
+			};				
+			window.addEventListener('show',_show, false);
+			window.addEventListener("reload",_show, false);
+			window.addEventListener("menu:close", closeMenu);
+			
+			//--重写mui.back
+			mui.oldBack = mui.back;
+			var backButtonPress = 0;
+			mui.back = function(event) {
+				if(parseInt(self.getStyle().left) > 0){//判断菜单是否打开
+					return;
+				}
+				backButtonPress++;
+				if (backButtonPress > 1) {
+					plus.runtime.quit();
+				} else {
+					plus.nativeUI.toast('再按一次退出应用');
+				}
+				setTimeout(function() {
+					backButtonPress = 0;
+				}, 1000);
+				return false;
+			};
 		</script>
 	</body>
 
