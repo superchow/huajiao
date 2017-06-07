@@ -1,7 +1,5 @@
 /**
  * 演示程序当前的 “注册/登录” 等操作，是基于 “本地存储” 完成的
- * 当您要参考这个演示程序进行相关 app 的开发时，
- * 请注意将相关方法调整成 “基于服务端Service” 的实现。
  **/
 (function($, owner) {
 	//获取网址
@@ -38,10 +36,12 @@
 			async:false,
 			//headers:{'Content-Type':'application/json'},服务器设置错误,故注释掉	              
 			success:function(data){
+				console.log(data);
+				console.log(JSON.stringify(data));
 				//服务器返回响应，根据响应结果，分析是否登录成功；
 				if(data.msg=="faile" || data==='null'){
 					return callback('用户名或密码错误');
-				}
+				}				
 				var _data= joinJson(loginInfo, data);				
 				users= joinJson(users, _data);								
 				localStorage.setItem('$users', JSON.stringify(users));
@@ -160,9 +160,6 @@
 	owner.setState = function(state) {
 		state = state || {};
 		localStorage.setItem('$state', JSON.stringify(state));
-		//var settings = owner.getSettings();
-		//settings.gestures = '';
-		//owner.setSettings(settings);
 	};
 	
 	/**
@@ -215,7 +212,7 @@
 			},					
 			dataType:'JSON',//服务器返回json格式数据
 			type:'post',//HTTP请求类型
-			//timeout:5000,//超时时间设置为5秒；
+			timeout:10000,//超时时间设置为10秒；
 			crossDomain: true,
 			//headers:{'Content-Type':'application/json'},
 			//async:false,	              
