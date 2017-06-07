@@ -16,21 +16,22 @@ function changePassword($identity) {
 	$myDB=new DB($identity);
 	$result=$myDB->find("select * from $identity where school_id='$school_id' and email='$email'");
 	if($result['school_id']>0){
-		$data['password']=GetRandStr(6);
+		$passworddata = GetRandStr(6);
+		$data['password']=md5($passworddata);
 		$password=$data['password'];
 		$sql="school_id='$school_id'";
 		$myDB->update($data,$sql);
 		$result=$myDB->find("select * from $identity where school_id='$school_id' and password='$password' ");
 		if($result['school_id']>0){
 			require_once("./phpmailer/functions.php");
-			$flag = sendMail($email,'花椒——密码找回','<span style="color:red;">'.$password.'</span><br/>');
+			$flag = sendMail($email,'花椒——密码找回','<span style="color:red;">'.$passworddata.'</span><br/>');
 			if(!$flag){
 				$arr['msg']='fail';
 				//输出结果
 				echo json_encode($arr,true);
 			}else{
 				$arr['msg']='success';
-				$arr['password']=$password;
+				$arr['password']=$passworddata;
 				//输出结果
 				echo json_encode($arr,true);
 			}

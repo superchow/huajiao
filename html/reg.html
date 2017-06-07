@@ -60,11 +60,11 @@
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码,长度为6~12">
+					<input id='password' type="password" class="mui-input-password mui-input" placeholder="请输入密码,长度为6~12">
 				</div>
 				<div class="mui-input-row">
 					<label>确认</label>
-					<input id='password_confirm' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+					<input id='password_confirm' type="password" class="mui-input-password mui-input" placeholder="请确认密码">
 				</div>
 				<div class="mui-input-row">
 					<label>邮箱</label>
@@ -120,10 +120,6 @@
 			</form>
 			<div class="mui-content-padded">
 				<button id='reg' data-loading-icon="mui-spinner mui-spinner-custom"  type="button" class="mui-btn mui-btn-block mui-btn-primary">注册</button>
-			</div>
-			<div class="mui-content-padded">
-				/*`name`, `sex`, `student_id`, `password`, `email`, `academy`, `major`, `class`, `birth`, `birthplace`, `current_class`, `current_table*/
-				<p>注册真实可用，注册成功后的用户可用于登录，但是示例程序并未和服务端交互，用户相关数据仅存储于本地。</p>
 			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
@@ -290,8 +286,7 @@
 								regButton.removeAttribute("disabled");
 								plus.nativeUI.closeWaiting();
 								return;
-							}
-							
+							}						
 							plus.nativeUI.toast('注册成功');
 							regButton.removeAttribute("disabled");
 							plus.nativeUI.closeWaiting();

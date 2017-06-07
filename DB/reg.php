@@ -26,7 +26,7 @@ if($result['school_id']>0){
 	echo json_encode($arr,true);
 }else{
 	$data["school_id"]=$school_id;
-	$data["password"]=$password;
+	$data["password"]=md5($password);
 	$data["name"]=$name;
 	$data["phone"]=$phone;
 	$data["sex"]=$sex;
