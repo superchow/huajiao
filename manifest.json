@@ -7,7 +7,7 @@
 	"id": "H539211B3",/*应用的标识，创建应用时自动生成，勿手动修改*/
 	"name": "花椒在线",/*应用名称，程序桌面图标名称*/
 	"version": {
-		"name": "1.0.0",/*应用版本名称*/
+		"name": "1.0.1",/*应用版本名称*/
 		"code": "83"
 	},
 	"description": "",/*应用描述信息*/
@@ -21,9 +21,7 @@
 		"url": "http://www.dcloud.io"
 	},
 	"permissions": {
-		"Accelerometer": {
-			"description": "访问加速度感应器"
-		},
+		
 
 		"Cache": {
 			"description": "管理应用缓存"
@@ -78,7 +76,7 @@
 		"Webview": {},
 		"NativeUI": {},
 		"Navigator": {},
-		"NativeObj": {},"Device":{},"Messaging":{},"Push":{},"Share":{}
+		"NativeObj": {},"Device":{},"Messaging":{}
 	},
 	"plus": {
 		"splashscreen": {
@@ -141,7 +139,7 @@
 					"ldpi": "unpackage/res/icons/48x48.png", /*大屏程序图标，分辨率：48x48*/
 					"hdpi": "unpackage/res/icons/72x72.png", /*高分屏程序图标，分辨率：72x72*/
 					"xhdpi": "unpackage/res/icons/96x96.png",/*720P高分屏程序图标，分辨率：96x96*/
-					"xxhdpi": "unpackage/res/icons/144x144.png"
+					"xxhdpi": "unpackage/res/icons/144x144.png","xxxhdpi":"unpackage/res/icons/192x192.png"
 				}
 			},
 			"splashscreen": {
@@ -344,25 +342,27 @@
 				"resources": [
 					"js/mui.min.js",
 					"fonts/mui.ttf",
-					"css/mui.min.css"
-				],
-				"refer": [
+					"css/mui.min.css",
+					"html/submit-task.html",
+					"html/self-center.html",
 					"html/related.html",
 					"html/task.html",
-					"html/self-center.html",
-					"html/class-members.html",
 					"html/daily-task.html",
-					"html/submit-task.html"
+					"html/class-members.html"
 				],
+				"refer": [],
 				"priority": 0
 			},
 			"html/task.html": {
 				"resources": [
 					"js/mui.min.js",
 					"css/mui.min.css",
-					"fonts/mui.ttf"
+					"fonts/mui.ttf",
+					"html/task-detail.html"
 				],
-				"refer": [],
+				"refer": [
+					"html/submit-task.html"
+				],
 				"priority": 0
 			},
 			"html/self-center.html": {
@@ -376,7 +376,11 @@
 			"html/class-members.html": {
 				"resources": [
 					"js/mui.min.js",
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"css/mui.indexedlist.css",
+					"js/mui.indexedlist.js",
+					"js/mui.view.js",
+					"fonts/mui.ttf"
 				],
 				"refer": [],
 				"priority": 0
@@ -399,7 +403,11 @@
 			"html/submit-task.html": {
 				"resources": [
 					"js/mui.min.js",
-					"css/mui.min.css"
+					"css/mui.min.css",
+					"js/mui.picker.min.js",
+					"fonts/mui.ttf",
+					"css/mui.picker.min.css",
+					"main-menu.html"
 				],
 				"refer": [],
 				"priority": 0
@@ -415,6 +423,8 @@
 		}
 	},
 	"unpackage":[
-	  "README.md"
+	  "README.md",
+	  "images/user-photo.png",
+	  "libs/easymob-webim-sdk/quickstart.md"
 	]
 }
