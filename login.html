@@ -100,7 +100,7 @@
 				</div>
 				<div class="mui-input-row">
 					<label>密码</label>
-					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+					<input id='password' type="password" class="mui-input-password mui-input" placeholder="请输入密码">
 				</div>
 			</form>
 			<form class="mui-input-group">
@@ -158,14 +158,14 @@
 						 * 但是页面在重新加载(开发)时，会失败
 						 * 故增加plus.webview.getWebviewById('main')进行判断
 						 */						
-						var id = setInterval(function () {
+						setTimeout(function () {
 							if(main_loaded_flag || plus.webview.getWebviewById('main')){								
-								clearInterval(id);
 								$.fire(mainPage, 'show', null);
-								mainPage.show("pop-in");
+								plus.nativeUI.closeWaiting();
+								mainPage.show("slide-in-right");
 								return ;
 							}
-						},100);
+						},500);
 					};
 					/******************测试用*****************/
 					plus.webview.currentWebview().addEventListener("close",function(){
@@ -181,28 +181,13 @@
 					for(var i=0;i<wvs.length;i++){
 						console.log("webview"+i+": "+wvs[i].id);
 					}
-					/************************************/
-					//检查 "登录状态/锁屏状态" 开始
-					if (settings.autoLogin && state.token && settings.gestures) {
-						$.openWindow({
-							url: 'html/unlock.html',
-							id: 'unlock',
-							show: {
-								aniShow: 'pop-in'
-							},
-							waiting: {
-								autoShow: false
-							}
-						});
-					} else if (settings.autoLogin && state.token) {
-						toMain();
-					} 
+					/************************************/			
 					// close splash
 					setTimeout(function() {
 						//关闭 splash
 						plus.navigator.closeSplashscreen();
 					}, 600);
-					//检查 "登录状态/锁屏状态" 结束
+					//检查 "登录状态" 结束
 					var loginButton = doc.getElementById('login'),
 						school_idBox = doc.getElementById('school_id'),
 						passwordBox = doc.getElementById('password'),
@@ -222,12 +207,11 @@
 							password: passwordBox.value
 						};
 						plus.nativeUI.showWaiting();
-						app.login(loginInfo, function(err) {
-							plus.nativeUI.closeWaiting();
+						app.login(loginInfo, function(err) {							
 							if (err) {
 								console.log("错误"+err)
 								plus.nativeUI.toast(err);
-								return;
+								return plus.nativeUI.closeWaiting();
 							}
 							toMain();
 						});
@@ -270,7 +254,7 @@
 									autoShow: true
 								}
 							});
-						},300);
+						},500);
 					}, false);
 					forgetButton.addEventListener('tap', function(event) {
 						$.openWindow({

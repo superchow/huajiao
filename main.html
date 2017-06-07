@@ -33,16 +33,16 @@
 		<script>
 			mui.init({
 				gestureConfig:{
-					doubletap:true
+					doubletap:true //启用
 				},
 				subpages:[{
 					url:'html/task.html',
-					id:'task',
+					id:'html/task.html',
 					styles:{
-						top: '45px',
-						bottom: '0px',
+						top: '46px',
+						bottom: '5px',
 						width: '100%',
-						height: '100%'
+						height: '94%' //不设置100%，会遮住加载更多
 					}
 				}],
 				statusBarBackground: '#f7f7f7',
@@ -57,15 +57,8 @@
 			var self;
 			
 			var users = JSON.parse(localStorage.getItem('$users') || '{}');
-			//只有ios支持的功能需要在Android平台隐藏；
-			if(mui.os.android) {
-				var list = document.querySelectorAll('.ios-only');
-				if(list) {
-					for(var i = 0; i < list.length; i++) {
-						list[i].style.display = 'none';
-					}
-				}
-				//Android平台暂时使用slide-in-right动画
+			//Android平台暂时使用slide-in-right动画
+			if(mui.os.android) {				
 				if(parseFloat(mui.os.version) < 4.4) {
 					aniShow = "slide-in-right";
 				}
@@ -94,6 +87,7 @@
 						autoShow: false
 					}
 				});
+				
 			};
 			// 关闭webview以及数据获取
 			function _show(){
@@ -121,11 +115,21 @@
 					console.log("webview"+i+": "+wvs[i].id);
 				}
 				/************************************/
+				//检测是否为白屏
+//				menu.checkRenderedContent({type:"bottom",interval:100},
+//				function (e){
+//					if(!e.rendered) {
+//						preload&&preload();
+//					}
+//				},
+//				function (){
+//					//未处理
+//				});
 			});			
 			function changeImg() {//修改头像
 				preload();					
 				mui.fire(menu, "imgInfo", {
-					src:users.img || "http://192.168.1.115/img/user.jpg"
+					src:users.img || "http://192.168.42.6/img/user.jpg"
 				});
 			};
 			function dragg() {//窗口滑动操作事件
@@ -137,14 +141,18 @@
 					moveMode: "follow"
 				}, function(e) {
 					if(e.type =="end" && e.direction == "ltr" && e.result == true){
-						if(contentWebview==null){
+						if(contentWebview == null){
 							contentWebview = plus.webview.currentWebview().children()[0];
 							console.log(contentWebview.id);
 						}
-						maskToggle();
+						!maskShow&&maskToggle();
 						console.log("main窗口打开了菜单");
-					}					
-				}.bind(this));
+					}
+					if(e.type =="end" && e.direction == "rtl" && e.result == true){
+						maskShow&&maskToggle();
+						console.log("main窗口关闭了菜单");
+					}
+				}.bind(this));				
 			};		
 			
 			var menu_btn = document.getElementById('menu'),
@@ -166,8 +174,10 @@
 				}
 				if(parseInt(self.getStyle().left) > 0){//判断菜单是否打开					
 					closeMenu(menu);
+					maskShow&&maskToggle();//关闭菜单后若遮罩存在则关闭
 				}else{
 					openMenu(menu);
+					!maskShow&&maskToggle();//打开菜单后若遮罩不存在则打开
 				}
 			}, false);
 			share_btn.addEventListener("tap",function(){
@@ -189,7 +199,7 @@
 					// 用户点击Webview窗口后关闭遮罩与菜单
 					console.log(self.id);
 					self.addEventListener("maskClick",function(){
-						maskToggle();
+						maskShow&&maskToggle();
 						closeMenu();
 						console.log("点击了遮罩");
 					},false);
@@ -268,17 +278,20 @@
 			var backButtonPress = 0;
 			mui.back = function(event) {
 				if(parseInt(self.getStyle().left) > 0){//判断菜单是否打开
+					closeMenu(menu);
 					return;
 				}
 				backButtonPress++;
 				if (backButtonPress > 1) {
 					plus.runtime.quit();
 				} else {
+					contentWebview =  contentWebview || plus.webview.currentWebview().children()[0];
+					contentWebview.evalJS("task_store&&task_store();") //保存任务数据
 					plus.nativeUI.toast('再按一次退出应用');
 				}
 				setTimeout(function() {
 					backButtonPress = 0;
-				}, 1000);
+				}, 1500);
 				return false;
 			};
 		</script>

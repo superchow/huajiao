@@ -4,17 +4,17 @@
 		<meta charset="UTF-8">
 		<title>测试页面</title>
 	</head>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 	<body>
 		测试页面
 		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 		<!--<script type="text/javascript">
 			//注册请求
 		function test(){
-			var msg=null;
-		$.ajax('./DB/reg.php',{
+		var _back=$.ajax('./DB/reg.php',{
 			data:regInfo={
-				identity:"teacher",
-				school_id: "20130610110202",
+				identity:"student",
+				school_id: "20130610110218",
 				password: "7913086zwz",
 				email: "2665752129@qq.com",
 				name:"周卫忠",
@@ -29,52 +29,121 @@
 			dataType:'JSON',//服务器返回json格式数据
 			type:'post',//HTTP请求类型
 			timeout:5000,//超时时间设置为5秒；
-			//headers:{'Content-Type':'application/json'},	              
+			              
 			success:function(data){
-				//服务器返回响应，根据响应结果，分析是否登录成功；
-				console.log(data.msg);
-				console.log(data.msg=='success');
-				
-				if(data.msg=='success'){return msg="zuc";}
-				if(data.msg=='Already'){return msg='该账号已存在';}
-				if(data.msg=='faile'){return msg='注册失败了，请再次尝试';}
-				console.log(data.msg);
-				console.log(JSON.stringify(data));
+				//服务器返回响应，根据响应结果，分析是否注册成功；
+				if(data.msg=='success'){return '';}
+				if(data.msg=='Already'){return '该账号已存在';}
+				if(data.msg=='faile'){return '注册失败了，请再次尝试';}
 			},
 			error:function(xhr,type,errorThrown){
 				//异常处理；
 				if(type=='timeout') {
-          return msg="请求超时";
-        }else{
-        	console.log(xhr);
-        	console.log(type);
-        	console.log(errorThrown);
-          return msg='请求失败：' + type + '\n err:' + errorThrown;
-				}
-      },
-      async:false
-		});
-		return msg;
-		}
+          			return "请求超时";
+        		}else{
+		        	console.log(xhr);
+		        	console.log(type);
+		        	console.log(errorThrown);
+		          	return '请求失败：' + type + '\n err:' + errorThrown;
+				};
+    		},
+			async:false
+			});
+			console.log(_back);
+			return JSON.parse(_back.responseText).msg;
+			//return _back.responseJSON.msg;出错
+		};
+		
 		console.log(test());
 		</script>-->
-		<script type="text/javascript">
-			//注册请求
-	function test(){
-		var _ajax=$.ajax('./DB/reg.php',{
-			data:regInfo,			
-			dataType:'json',//服务器返回json格式数据
-			type:'post',//HTTP请求类型
-			timeout:5000,//超时时间设置为5秒；
-			//headers:{'Content-Type':'application/json'},	              			
-      async:false
-		});
-    console.log(_ajax);
-    return JSON.parse(_ajax.responseText).msg;
-    //return msg.responseJSON.msg; 失败
-	}
-	console.log(test());
+		<!--<script type="text/javascript">
+			$.ajax('./DB/login.php',{
+				data:{
+					identity:"student",
+					school_id:"20130610110218",
+					password:"7913086zwz"
+				},
+				dataType:'json',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:5000,//超时时间设置为5秒；
+				//headers:{'Content-Type':'application/json'},	              			
+	     		async:false,
+	     		success:function(data){
+	     			//服务器返回响应，根据响应结果，分析是否登录成功；
+					if(data.msg=="faile"){
+						console.log(JSON.stringify(data));
+						
+						return;
+					}
+					if(data==='null'){
+						console.log(JSON.stringify(data));
+						
+						return;
+					}
+					console.log(JSON.stringify(data));
+	     		}
+			});
+
+		    //return msg.responseJSON.msg; 失败
 		</script>
-		
+		-->
 	</body>
+	<script type="text/javascript">
+		$.ajax('http://192.168.191.1/huajiao/DB/forgetPassword.php',{//修改密码
+			data:{		
+				school_id: "20130610110200",
+				email: "2665752129@qq.com"
+			},					
+			dataType:'JSON',//服务器返回json格式数据
+			type:'post',//HTTP请求类型
+			timeout:10000,//超时时间设置为10秒；
+			//headers:{'Content-Type':'application/json'},
+			//crossDomain: true,
+			//async:false,	              
+			success:function(data){
+				//var data=JSON.parse(data);
+				if(data.msg=='notfind'){
+					console.log("邮箱与账号不匹配!!")
+					return console.log(data);
+					//return $.toast("邮箱与账号不匹配!");
+				}
+				if(data.msg=='fail'){
+					console.log("发送失败哦!")
+					return  console.log(data);
+				}
+				if(data.msg=='faile'){
+					console.log("服务器抽风了,请再次尝试!")
+					return  console.log(data);
+					//return $.toast("服务器抽风了,请再次尝试!");
+				}
+				if(data.msg=='success'){
+					//postMail(email,data.password);
+					console.log("发送成功了!")
+					console.log(data);
+					return;
+				}		
+				console.log(data);
+				return console.log("未知错误!");
+			},
+			error:function(xhr,type,errorThrown){
+				//异常处理；
+				if(type=='timeout') {
+          			//return callback("发送失败了!");
+          			console.log("超时了")
+          			//return $.toast("发送失败了!");
+        		}else{
+		        	console.log(xhr);
+		        	console.log(type);
+		        	console.log(errorThrown);
+		          	//return callback('发送失败：' + type + '\n err:' + errorThrown);
+		          	console.log("~发送失败了!")
+		          	//return $.toast("~发送失败了!");
+				};
+    		}
+		});
+	</script>
+	<script type="text/javascript">
+		var a = "{\"name\":\"\\u5468\\u536b\\u5fe0\",\"sex\":\"\\u7537\",\"school_id\":\"20130610110218\",\"password\":\"123456\",\"email\":\"zwzschow@163.com\",\"phone\":\"0\",\"academy\":\"\\u4fe1\\u606f\\u5b66\\u9662\",\"major\":\"\\u7269\\u8054\\u7f51\\u5de5\\u7a0b\",\"class\":\"\\u4e8c\\u73ed\",\"birth\":\"1995\\/01\\/25\",\"birthplace\":\"\\u6c5f\\u897f\\u7701\\u5409\\u5b89\\u5e02\\u6c38\\u65b0\\u53bf\",\"current_class\":\"\\u7269\\u8054\\u7f51\\u5de5\\u7a0b \\u4e8c\\u73ed\",\"current_table\":\"iot_2\"}";
+		console.log(mui.parseJSON(a));
+	</script>
 </html>
