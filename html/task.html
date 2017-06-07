@@ -6,29 +6,53 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<style type="text/css">
+			.mui-table-view-chevron .mui-table-view-cell{
+				/*重写列表右侧宽度*/
+				padding-right: 45px;
+			}
+			#bubble{
+				float:right;				
+				margin-right:20px;
+			}
+		</style>
 	</head>
 
 	<body>
 		<!--下拉刷新容器-->
 		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
 			<!--数据列表-->
 			<ul class="mui-table-view mui-table-view-chevron">
-				<li class="mui-table-view-cell">
-					<a href="" class="mui-navigate-right">Item 1</a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a href="" class="mui-navigate-right">Item 2</a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a href="" class="mui-navigate-right">Item 3</a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a href="" class="mui-navigate-right">Item 4</a>
-				</li>
-				<li class="mui-table-view-cell">
-					<a href="" class="mui-navigate-right">Item 5</a>
-				</li>
+				<!--<li class="mui-table-view-cell mui-media">
+					<a href="task-detail.html" data-taskid="21">
+						<div class="mui-media-body">班会通知		
+							<span id="bubble">
+							<span class="mui-badge mui-badge-purple mui-badge-inverted task-who">杨青</span>
+							<span class="mui-badge mui-badge-primary mui-badge-success task-starttime">04-15</span> <span class="mui-badge mui-badge-primary mui-badge-success task-starttime">04-15</span>	</span>						
+                		<p class='mui-ellipsis'>明天下午，逸夫楼205开班会</p>
+            			</div>
+					</a>
+				</li>				-->
 			</ul>
+			</div>
+			<div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+			    <!-- 可选择菜单 -->
+			    <ul class="mui-table-view">
+			      <li class="mui-table-view-cell">
+			        <a href="#" class="revise">修改</a>
+			      </li>
+			      <li class="mui-table-view-cell">
+			        <a href="#" class="delete">删除</a>
+			      </li>
+			    </ul>
+			    <!-- 取消菜单 -->
+			    <ul class="mui-table-view">
+			      <li class="mui-table-view-cell">
+			        <a href="#sheet1"><b>取消</b></a>
+			      </li>
+			    </ul>
+			</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
 		<script type="text/javascript">
@@ -36,47 +60,376 @@
 				pullRefresh: {
 					container: '#pullrefresh',
 					down: {
+						height:50,//可选.默认50.触发上拉加载拖动距离
+					    contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+					    contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+					    contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+						//auto: true,
 						callback: pulldownRefresh
 					},
 					up: {
-						contentrefresh: '正在加载...',
+						height:70,//可选.默认50.触发上拉加载拖动距离
+					    contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+					    contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
 						callback: pullupRefresh
 					}
+				},
+				gestureConfig:{
+				    tap: true, //默认为true
+				    doubletap: true, //默认为false
+				    longtap: true, //默认为false
+				    swipe: true, //默认为true
+				    drag: true, //默认为true
+				    hold:false,//默认为false，不监听
+				    release:false//默认为false，不监听
 				}
+
 			});
+			var url = localStorage.getItem("url") || "http://192.168.1.115/huajiao/",
+				users = JSON.parse(localStorage.getItem('$users') || "{}"),
+				tasks = JSON.parse(localStorage.getItem('tasks') || "[]");
+			var table = document.body.querySelector('.mui-table-view');
+			mui.plusReady(function(){
+				console.log(JSON.stringify(plus.webview.currentWebview()))
+				
+			});
+			//合并数据,并存储,废弃了
+			/*function taskStore(_tasks, bein){
+				if(!(_tasks instanceof Array)){
+					if(typeof(_tasks) == String){
+						_tasks = JSON.parse(_tasks);
+					}
+					_tasks = [].concat(_tasks);
+				}
+				if(typeof(bein) == String){
+					bein = JSON.parse(bein);
+				}
+				_tasks = _tasks.concat(bein);
+				_tasks.sort(function(a,b){//降序
+					return a.taskid < b.taskid
+				});
+				_tasks = JSON.stringify(_tasks);
+				localStorage.setItem("tasks",_tasks);
+			}
+			mui.each(tasks,function(index,item){
+				taskInset(item,false);
+			}); */
 			/**
 			 * 下拉刷新具体业务实现
 			 */
 			function pulldownRefresh() {
-				setTimeout(function() {
-					var table = document.body.querySelector('.mui-table-view');
-					var cells = document.body.querySelectorAll('.mui-table-view-cell');
-					for (var i = cells.length, len = i + 3; i < len; i++) {
-						var li = document.createElement('li');
-						li.className = 'mui-table-view-cell';
-						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
-						//下拉刷新，新纪录插到最前面；
-						table.insertBefore(li, table.firstChild);
+				var cells = table.querySelector('.mui-table-view-cell a'),
+				    user = users || JSON.parse(localStorage.getItem('$users') || "{}"),
+					current_table = user.current_table,
+					taskid = localStorage.getItem("lasttime_taskid") || "0";
+					try{
+						taskid = cells.getAttribute("data-taskid");
+					}catch(e){}					
+				mui.ajax(url+'DB/taskbyclass.php',{
+					data:{
+						fromClass: current_table,
+						taskid: taskid,
+						direction: "down"
+					},
+					dataType:'JSON',
+					type:'post',
+					timeout:10000,
+					crossDomain: true,
+					//headers:{'Content-Type':'application/json'},
+					beforeSend:function(){
+						if(current_table == "" || current_table == null){
+							mui.toast("您尚未加入任何班级");
+							return false;
+						}
+					},
+					success:function(data){
+						//服务器返回响应，根据响应结果，分析是否成功；
+						console.log(JSON.stringify(data));
+						var datas = JSON.parse(data);
+						console.log(datas)
+						if(datas.msg=="success"){
+							console.log(datas.data);	
+							console.log(JSON.stringify(datas.data));
+							taskInset(datas.data, true);
+							return;
+						}else{
+							mui.toast("暂无更多任务");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						//mui.toast('网络连接失败，请检查网络设置');						
+						if(type=='timeout') {
+			              	mui.toast("请求超时：请检查网络")
+			            } else {
+			            	console.log(xhr);
+			            	console.log(type);
+			            	console.log(errorThrown);			              	
+			            }
+					},
+					complete:function(){
+						mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
 					}
-					mui('#pullrefresh').pullRefresh().endPulldownToRefresh(); //refresh completed
-				}, 1500);
+				});								
 			}
-			var count = 0;
 			/**
 			 * 上拉加载具体业务实现
 			 */
 			function pullupRefresh() {
-				setTimeout(function() {
-					mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
-					var table = document.body.querySelector('.mui-table-view');
-					var cells = document.body.querySelectorAll('.mui-table-view-cell');
-					for (var i = cells.length, len = i + 5; i < len; i++) {
-						var li = document.createElement('li');
-						li.className = 'mui-table-view-cell';
-						li.innerHTML = '<a class="mui-navigate-right">Item ' + (i + 1) + '</a>';
-						table.appendChild(li);
+			//mui('#pullrefresh').pullRefresh().endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
+				var cells = table.querySelectorAll('.mui-table-view-cell a'),
+					user = users || JSON.parse(localStorage.getItem('$users') || "{}"),
+					current_table = user.current_table,
+					taskid = localStorage.getItem("lasttime_taskid") || "0"
+				if(cells.length){
+					taskid = cells[cells.length - 1].getAttribute("data-taskid");					
+				}				
+					console.log(taskid);
+				mui.ajax(url+'DB/taskbyclass.php',{
+					data:{
+						fromClass: current_table,
+						taskid: taskid,
+						direction: "up"
+					},
+					dataType:'JSON',
+					type:'post',
+					timeout:10000,
+					crossDomain: true,
+					//headers:{'Content-Type':'application/json'},
+					beforeSend:function(){
+						if(current_table == "" || current_table == null || user.current_class == ""){
+							mui.toast("您尚未加入任何班级");
+							mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							return false;
+						}
+						if(!taskid){//若最后的taskid为 0
+							setTimeout(function(){
+								mui.toast("已经没有任务了");
+								mui('#pullrefresh').pullRefresh().endPullupToRefresh(true);
+							}, 1000);							
+							return false;
+						}
+					},
+					success:function(data){
+						//服务器返回响应，根据响应结果，分析是否成功；
+						console.log(JSON.stringify(data));
+						var data = JSON.parse(data);
+						if(data.msg=="success"){
+							console.log(JSON.stringify(data));	
+							taskInset(data.data, false);
+							return;
+						}else{
+							mui.toast("没有更多任务");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						//mui.toast('网络连接失败，请检查网络设置');						
+						if(type=='timeout') {
+			              	mui.toast("请求超时：请检查网络")
+			            } else {
+			            	console.log(xhr);
+			            	console.log(type);
+			            	console.log(errorThrown);			              	
+			            }
+					},
+					complete:function(){
+						mui('#pullrefresh').pullRefresh().endPullupToRefresh(); //refresh completed
 					}
-				}, 1500);
+				});			
+			}
+			pullupRefresh();//执行一次
+			//数据的插入
+			function taskInset(data, insert){
+				var oFragmeng = document.createDocumentFragment();  //创建文档碎片
+				var cells = table.querySelectorAll('.mui-table-view-cell');	
+				if((cells.length == 0) && (tasks.length > 0)){	
+
+					mui.each(tasks,function(index,item){	
+						if( !item && (item instanceof Object) && itme.school_id ){
+							oFragmeng.appendChild(tableCell(item));
+						}					  	
+					});					
+				}
+				if(data instanceof Object){
+					mui.each(data,function(index,item){
+						oFragmeng.appendChild(tableCell(item));
+					})
+				}else{
+				}
+				if(insert){//下拉刷新，新纪录插到最前面；
+					table.insertBefore(oFragmeng, table.firstChild);
+				}else{//上拉加载，新纪录插到后面				
+					table.appendChild(oFragmeng);
+				}
+			}				
+			//一个完整的li
+			function tableCell(item){
+				var li = document.createElement('li'),
+					a = document.createElement('a'),
+					div = document.createElement('div');					
+				li.className = 'mui-table-view-cell mui-media';
+				//a.setAttribute("href","task-detail.html");
+				a.setAttribute("data-taskid",item.taskid);//存任务id，方便刷新操作
+				a.setAttribute("data-store",JSON.stringify(item));//跳转
+				div.className = 'mui-media-body';
+				var start = timeControl(item.starttime),
+					end = timeControl(item.endtime);
+				div.innerHTML = item.title + '<span id="bubble">'
+					+ ' <span class="mui-badge mui-badge-purple mui-badge-inverted task-who">'+ item.who + '</span>'
+					+ ' <span class="mui-badge task-starttime '+ start.Class +' ">' + start.timestr + '</span>'
+					+ ' <span class="mui-badge task-endtime '+ end.Class +' ">' + end.timestr + '</span></span>'
+					+ ' <p class="mui-ellipsis">' + decodeURIComponent(item.info) +'</p>';
+				
+				a.appendChild(div);
+				li.appendChild(a);
+				return li;
+			}
+			//时间判断
+			function timeControl(timeStr){				
+				var out = {},
+					nowTime = new Date();
+				// 获取当前时间戳(以s为单位)
+				var nowTimeStr = Date.parse(nowTime) / 1000,
+					targetTime = Date.parse(new Date(timeStr)) / 1000;		
+					out.timestr = timeStr.trimLeft().substring(5,10);
+				if(timeStr.length > 12){
+					if(targetTime - nowTimeStr > 172800){
+						out.Class = "mui-badge-primary";
+					}else if( (targetTime - nowTimeStr < 172800 ) && (targetTime - nowTimeStr > 86400) ){
+						out.Class = "mui-badge-warning";
+					}else if( (targetTime - nowTimeStr < 86400 ) && (targetTime - nowTimeStr > 0) ){
+						out.Class = "mui-badge-danger";
+					}else{
+						out.Class = "mui-badge-purple";
+					}					 
+				}else{					
+					//转成 2014-06-18T02:33:24.000Z 格式
+					nowTime = nowTime.toISOString() || nowTime.toJSON();
+					nowTimeStr = Date.parse(new Date(nowTime.trimLeft().substring(0,10))) / 1000;
+					if(targetTime - nowTimeStr > 86400){
+						out.Class = ""
+					}else if( (targetTime - nowTimeStr < 86400 ) && (targetTime - nowTimeStr > 0) ){
+						out.Class = "mui-badge-primary";
+					}else{
+						out.Class = "mui-badge-success";
+					}
+				}
+				return out;
+			}
+			function task_store(){//保存数据
+				var aDOM = "0";
+				if(table.querySelector("a")){
+					aDOM = table.querySelector("a").getAttribute("data-taskid");
+				}
+				localStorage.setItem("lasttime_taskid", aDOM);
+				console.log(aDOM)
+			}
+			mui(".mui-table-view").on('longtap','.mui-table-view-cell a',function(){
+				var delet_taskid = this.getAttribute("data-taskid");
+				mui("#sheet1 a").each(function(){
+					this.setAttribute("data-id",delet_taskid)
+				})
+				mui('#sheet1').popover('toggle');				
+			});
+			document.querySelector("#sheet1 a.revise").addEventListener("tap",function(){
+				mui('#sheet1').popover('toggle');
+				console.log(this.getAttribute("data-id") || "没有？")
+				var revisetaskA = table.querySelector("[data-taskid='"+this.getAttribute("data-id")+"']");
+				if(revisetaskA.tagName == "A"){	
+					mui.openWindow({
+						url: "./submit-task.html",
+    					id: "html/submit-task.html",
+						extras:{
+					     	taskAll: revisetaskA.getAttribute("data-store")//自定义扩展参数，可以用来处理页面间传值
+					    },
+					    show:{
+					        autoShow:true,//页面loaded事件发生后自动显示，默认为true				       
+					        event:'loaded',//页面显示时机，默认为titleUpdate事件时显示
+    					}
+					});
+					/*var submittaskwebview = plus.webview.create("./submit-task.html","html/submit-task.html");
+					console.log(JSON.stringify(submittaskwebview));
+					submittaskwebview.addEventListener("loaded", function() {						 	
+						submittaskwebview.show("slide-in-bottom", 300);						
+					});
+					setTimeout(function(){
+						mui.fire(submittaskwebview, "revisetask", { "taskAll": JSON.parse(revisetaskA.getAttribute("data-store"))} );
+					},300); */
+				}
+			},false);
+			document.querySelector("#sheet1 a.delete").addEventListener("tap",function(){				
+				deletetask(this.getAttribute("data-id") || "none");
+			},false);
+			function deletetask(id){
+				if(id == "none"){return false;}
+				var checkuser = users || JSON.parse(localStorage.getItem('$users') || "{}"),
+					current_table = checkuser.current_table,
+					school_id = checkuser.school_id,
+					identity = checkuser.identity,
+					permission = checkuser.permission;
+				mui.ajax(url+'DB/deletebypermission.php',{
+					data:{
+						fromClass: current_table,
+						taskid: id,
+						school_id: school_id,
+						identity: identity,
+						permission: permission
+					},
+					dataType:'JSON',
+					type:'post',
+					timeout:10000,
+					crossDomain: true,
+					//headers:{'Content-Type':'application/json'},
+					beforeSend:function(){
+						if( (identity == "student") && (permission == "0") ){
+							return mui.alert("您没有权限操作","提示","确定",null),false;
+						}
+						console.log(table)
+						var somecheck = table.querySelector("[data-taskid='"+id+"']");
+						var checkschool_id = JSON.parse(somecheck.getAttribute("data-store")).school_id; 					
+						if(school_id != checkschool_id){
+							console.log(school_id + "---" + checkschool_id)
+							return mui.alert("您没有权限操作","提示","确定",null),false;
+						}else{
+							console.log("通过前端检测");
+						}
+					},
+					success:function(data){
+						//服务器返回响应，根据响应结果，分析是否成功；
+						console.log(JSON.stringify(data));
+						var data = JSON.parse(data);
+						if(data.msg=="success"){	
+							mui.toast("删除成功");
+							return removetask(id);							
+						}else if(data.msg=="ban"){
+							return mui.alert("您没有权限操作","提示","确定",null);
+						}else if(data.msg=="falie"){
+							return mui.toast("删除失败");
+						}else{
+							return mui.toast("身份信息错误");
+						}
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						//mui.toast('网络连接失败，请检查网络设置');						
+						if(type=='timeout') {
+			              	mui.toast("请求超时：请检查网络")
+			            } else {
+			            	console.log(xhr);
+			            	console.log(type);
+			            	console.log(errorThrown);            	
+			            }
+					},
+					complete:function(){
+						mui('#sheet1').popover('toggle');
+					}
+				});	
+			}
+			//移除节点
+			function removetask(taskid){
+				var deleteA = table.querySelector("[data-taskid='"+taskid+"']");
+				deleteA.parentNode.parentNode.removeChild(deleteA.parentNode);
 			}
 		</script>
 	</body>
