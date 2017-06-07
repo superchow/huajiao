@@ -6,15 +6,366 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.indexedlist.css"/>
+		<style>
+			html,
+			body {
+				height: 100%;
+				overflow: hidden;
+			}
+			.mui-bar {
+				-webkit-box-shadow: none;
+				box-shadow: none;
+			}
+			#addmembers.mui-disabled{
+				color: gray;
+			}
+			#searchlist input {
+				border-radius: 0px;
+				margin: 0px;
+				background-color: #fafafa;
+			}
+			
+			li{
+				list-style: none;
+			}
+		</style>
+		<script type="text/javascript">
+			//获取本地配置
+			var server = localStorage.getItem("url") || "http://192.168.191.1/huajiao/" ;
+			var user = JSON.parse(localStorage.getItem("$users") || "{}");
+		</script>
 	</head>
 
 	<body>
 		<div class="mui-content">
-			班级成员
+			<header class="mui-bar mui-bar-nav">
+				<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+				<h1 class="mui-title">班级成员</h1>
+				<a id='addmembers' class="mui-btn mui-btn-link mui-pull-right mui-btn-blue ">添加</a>
+			</header>
+		<div class="mui-content">
+			<div id='memberlist' class="mui-indexed-list ">
+				<div class="mui-indexed-list-search mui-input-row mui-search">
+					<input type="search" class="mui-input-clear mui-indexed-list-search-input" placeholder="搜索本班级成员">
+				</div>
+				<div class="mui-indexed-list-bar">
+					<a>男</a>	
+					<a>女</a>
+				</div>
+				<div class="mui-indexed-list-alert"></div>
+				<div class="mui-indexed-list-inner">
+					<div class="mui-indexed-list-empty-alert">暂无班级成员</div>
+					<ul class="mui-table-view listEventListener">
+						<li data-group="男" class="mui-table-view-divider mui-indexed-list-group">男</li>
+						<!--<li data-value="AKU" data-tags="AKeSu" class="mui-table-view-cell mui-indexed-list-item mui-collapse">
+							<a class="mui-navigate-right" href="#">轻风</a>
+				            <div class="mui-collapse-content">
+				                <p>轻风的个人信息</p>
+				            </div>
+						</li>		-->
+						<li data-group="女" class="mui-table-view-divider mui-indexed-list-group">女</li>
+					</ul>
+				</div>
+			</div>
+			<!--添加学生/老师-->
+			<div id="searchlist" class="mui-hidden">
+			    <div class="">
+					<input type="search" id="searchmember" class="mui-input-clear" placeholder="搜索">
+				</div>				
+				<div class="self-list-alert"></div>
+				<div class="self-list-inner">
+					<div class="self-list-empty-alert mui-hidden">未查询到</div>
+					<ul class="mui-table-view afterSearch">			
+						<!--<li data-value="AKU" data-tags="AKeSu" class="mui-table-view-cell mui-collapse">
+							<a class="mui-navigate-right" href="#">历时</a>
+				            <div class="mui-collapse-content">
+				                <p>历时</p>
+				            </div>
+						</li>						-->
+					</ul>					
+				</div>
+			</div>			
+			<!--添加结束-->
+		</div>
 		</div>
 		<script src="../js/mui.min.js"></script>
+		<script src="../js/mui.indexedlist.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
-			mui.init()
+			mui.init();
+			var mboyli =document.querySelector('#memberlist li[data-group="男"]'),
+				mgirlli = document.querySelector('#memberlist li[data-group="女"]'),
+				searchli =document.querySelector('.afterSearch');					
+			mui.plusReady(function(){
+				var header = document.querySelector('header.mui-bar');
+				var list = document.getElementById('memberlist');
+				var searchlist = document.getElementById("searchlist");
+				var addmembers = document.getElementById('addmembers');
+				//calc hieght
+				list.style.height = (document.body.offsetHeight - header.offsetHeight) + 'px';
+				//create
+				window.indexedList = new mui.IndexedList(list);
+				//addmembers event
+				addmembers.addEventListener('tap', function() {					
+					if (memberlist.classList.contains("mui-hidden")) {
+						memberlist.classList.remove("mui-hidden");
+						searchlist.classList.add("mui-hidden");
+						this.innerText ="添加";
+					}else{
+						memberlist.classList.add("mui-hidden");
+						searchlist.classList.remove("mui-hidden");
+						this.innerText ="取消";
+					}									
+				}, false);
+
+			});
+		//初始化完成
+//		获取成员信息
+			(function($,doc){
+				if(user.current_table == "" || user.current_table == null || user.current_class == "" || user.current_class == null){
+					doc.querySelector(".mui-indexed-list-inner").innerHTML = "<p>您当前尚未加入任何班级</p>" 
+				}else{
+					var searchtable =["student","teacher"];
+					searchtable.forEach(function(table){
+						$.getJSON(server+"DB/searchin"+ table +".php",{class_table:user.current_table || "none"},function(backdata){
+							console.log(JSON.stringify(backdata));
+							var data = backdata;
+							if(data.msg = "success"){
+								addlist&&addlist(data[table], true);
+							}else{
+								mui.toast("请检查网路设置")
+							}
+						});
+					});										
+				}
+				//监听键盘搜索按钮
+				doc.getElementById("searchmember").addEventListener("keydown",function(e){ 
+					var that = this;
+					var values = that.value;
+					var old = "";
+					if(that.getAttribute("data-old")){
+						old = that.getAttribute("data-old");
+					}			
+					console.log(values)
+					if( (13 == e.keyCode)&&(values !="")&&(values != old) ){ //点击了“搜索” 
+						console.log("开始搜索")
+						//that.setAttribute("data-old",values);
+						$.getJSON(server+"DB/searchmembers.php",{search: values},function(searchdata){
+							console.log(JSON.stringify(searchdata))
+							var data = searchdata;
+							if(data.msg = "success"){
+								addlist&&addlist(data['teacher'], false);
+								addlist&&addlist(data['student'], false);
+							}else if(data.msg == "empty"){
+								mui.toast("输入为空");
+							}else{
+								mui.toast("查询失败");
+							}
+						});
+					} 
+				},false);			
+			})(mui,document);
+//		插入数据
+			function addlist(listArray, being){
+				if(!listArray){return false;}
+				var oFragmengboy = document.createDocumentFragment(),
+					oFragmenggirl = document.createDocumentFragment();//创建文档碎片
+				var boys = [];
+				var girls = [];
+				mui.each(listArray,function(index,tab){//分性别，排序
+					if(tab.sex == "男"){
+						boys.push(tab);
+					}else if(tab.sex == "女"){
+						girls.push(tab);
+					}
+				});
+				mui.each(boys,function(index,item){
+					if(being){
+						oFragmengboy.appendChild(memberCell(item));
+					}else{
+						oFragmengboy.appendChild(searchCell(item));
+					}
+				});
+				mui.each(girls,function(index,item){
+					if(being){
+						oFragmenggirl.appendChild(memberCell(item));
+					}else{
+						oFragmenggirl.appendChild(searchCell(item));
+					}
+				});
+				//处理结束，开始插入元素
+				if(being){					
+					insertAfter(oFragmengboy, mboyli);
+					insertAfter(oFragmenggirl, mgirlli);					
+				}else{
+					insertAfter(oFragmengboy, searchli);
+					insertAfter(oFragmenggirl, searchli);	
+				}
+			}
+			//成员 li
+			function memberCell(info){								
+				var li = document.createElement('li');
+				li.setAttribute("data-value", info.school_id);
+				li.setAttribute("data-tags", info.academy);
+				li.className = "mui-table-view-cell mui-indexed-list-item mui-collapse";
+				var temp = ' <p>'+ info.school_id  +'<span style="margin-left:20px;">';
+				if(info.major){temp += info.major;}
+				if(info.class){temp += ' ' +info.class;}
+				if(!info.permission&&(info.permission != "0")){info.permission = 3}
+				li.innerHTML =' <a class="mui-navigate-right" href="#">'+ info.name +'</a>'
+							+ ' <div class="mui-collapse-content">'+ info.academy +' '+ temp +'</span> </p>'
+							+ ' <p> 性别: '+ info.sex+'</p> <p> 邮箱: '+ info.email+'</p> <p>手机号:'+ info.phone +'</p>'
+							+ ' <div class="teacherOnly"> 当前权限值为: '+ info.permission 
+							+ ' <button type="button" data-id="' + info.school_id + '" class="permission mui-btn mui-btn-mini mui-btn-primary" style="margin-left:20px; ">给予权限</button>'
+							+ ' <p style="margin-top:5px;" ><button type="button" data-id="' + info.school_id + '"  class="delete mui-btn mui-btn-mini mui-btn-danger">删除该成员</button>'
+							+ ' <button type="button" data-id="' + info.school_id + '" class="backpermission mui-btn mui-btn-mini mui-btn-primary" style="margin-left:45px;">降低权限</button> '
+							+ ' </p></div> </div>';
+				return li;
+			}
+			//搜索 li
+			function searchCell(info){				
+				var li = document.createElement('li');
+				li.className = "mui-table-view-cell mui-collapse";
+				var temp = ' <p>'+ info.school_id  +'<span style="margin-left:20px;">';
+				if(info.major){temp += info.major;}
+				if(info.class){temp += ' ' +info.class;}
+
+				li.innerHTML =' <a class="mui-navigate-right" href="#">'+ info.name +'</a>'
+							+ ' <div class="mui-collapse-content teacherOnly">'+ info.academy +' '+ temp +'</span> </p>'			
+							+ ' <p> 性别: '+ info.sex+'</p> <p> 邮箱:'+ info.email +'手机号:'+ info.phone +'</p>'
+							+ ' <button type="button" data-sex="'+ info.sex +'" data-info="'+ JSON.stringify(info) +'" data-id="' + info.school_id + '" class="mui-btn mui-btn-mini mui-btn-success">添加该成员</button>'
+							+ ' </div>';
+				return li;
+			}
+			//追加元素到指定元素的后面
+			function insertAfter( newElement, targetElement ){ // newElement是要追加的元素 targetElement 是指定元素的位置   
+			    var parent = targetElement.parentNode; // 找到指定元素的父节点   
+			    if( parent.lastChild == targetElement ){ // 判断指定元素的是否是节点中的最后一个位置 如果是的话就直接使用appendChild方法   
+			        parent.appendChild( newElement, targetElement );   
+			    }else{   
+			        parent.insertBefore( newElement, targetElement.nextSibling );   
+			    };   
+			};
+			  
+		</script>
+		<script type="text/javascript">
+			(function(doc){
+				if(user.identity != "teacher"){//将教师功能隐藏，根据当前的用户标识
+					mui(".teacherOnly").each(function(){
+						this.style.display = "none";
+					});
+				}
+//				给生成的三个按钮添加事件，成员列表和搜索列表
+				mui('.listEventListener').on("tap",".permission",function(){
+					var that = this;//给权限
+					console.log(that.getAttribute("data-id"));
+//					server user 在用户为学生时隐藏了，但是还是要加上
+					if(user.identity != "teacher"){return false;}
+					var prenode = that.previousElementSibling || that.previousSibling; 
+					console.log(prenode.nodeValue)
+					var textvalues = prenode.nodeValue;
+					var permissionText = textvalues.substring(textvalues.length-2,textvalues.length-1);
+					if(permissionText == "3"){
+						return mui.toast("当前已是最高权限！");
+					}
+					if(permissionText == "1"){
+						return mui.toast("该成员已有权限");
+					}
+					mui.post(server+"DB/serverClass.php",{
+							action: 'Grant authority',
+							identity: user.identity,
+							authorizeID: user.school_id,
+							changeID: that.getAttribute("data-id"),
+						},function(data){
+							if(data.msg =="success"){
+								permissionText = permissionText + 1;
+								prenode.nodeValue = "当前权限值为："+ permissionText;
+								return mui.toast("操作成功");
+							}
+						},'JSON'
+					);			
+				});
+				//权限撤销
+				mui('.listEventListener').on("tap",".backpermission",function(){
+					var that = this;//降低权限
+					console.log(that.getAttribute("data-id"));
+					if(user.identity != "teacher"){return false;}
+					var contentNode= that.parentNode.parentNode.firstChild;
+					console.log(contentNode)
+					var textvalues = contentNode.nodeValue;
+					var permissionText = textvalues.substring(textvalues.length-2,textvalues.length-1);					
+					if(permissionText == "0"){
+						return mui.toast("该成员无权限");
+					}
+					mui.post(server+"DB/serverClass.php",{
+							action: 'revoke',
+							identity: user.identity,
+							authorizeID: user.school_id,
+							changeID: that.getAttribute("data-id"),
+						},function(data){
+							if(data.msg =="success"){
+								permissionText = permissionText + 1;
+								contentNode.nodeValue = "当前权限值为："+ permissionText;
+								return mui.toast("操作成功");
+							}
+						},'JSON'
+					);			
+				});
+				//删除操作
+				mui('.listEventListener').on("tap",".delete",function(){
+					var that = this;console.log(this);//删除成员
+					if(user.identity != "teacher"){return false;}
+					mui.confirm("是否删除该成员？","删除",["否","是"],function(e){
+						if(e.index == 1){
+							mui.post(server+"DB/serverClass.php",{
+									action: 'DELETE',
+									identity: user.identity,
+									authorizeID: user.school_id,
+									changeID: that.getAttribute("data-id"),
+									current_table: user.current_table
+								},function(data){
+					
+									if(data.msg == 'success'){
+										var selfli = that.parentNode.parentNode.parentNode.parentNode;
+										selfli.parentNode.removeChild(selfli);
+										mui.toast("删除成功");
+									}else if(data.msg == "fail"){
+										mui.toast("删除失败，请重试");
+									}else if(data.msg == "cannot"){
+										mui.toast("您无法删除");
+									}
+								},'json'
+							);
+						}
+					});
+					
+				});
+				//添加操作
+				mui(".afterSearch").on("tap","button",function(){
+					var that = this;console.log(this);//添加成员
+					if(user.identity != "teacher"){return false;}
+					mui.post(server+"DB/serverClass.php",{
+							action: 'INSERT',
+							identity: user.identity,
+							authorizeID: user.school_id,
+							changeID: that.getAttribute("data-id"),
+							current_table: user.current_table
+						},function(data){
+							if(data.msg == "success"){
+								that.className +="mui-disabled";
+								that.value = "已添加";
+								var content = mboyli;
+								if(that.getAttribute("data-sex") =="女"){
+									content = mgirlli;
+								};
+								insertAfter&&insertAfter(memberCell(that.getAttribute("data-info")), content);
+							}else{
+								mui.toast("添加失败");
+							}
+						},'json'
+					);
+				});
+			})(document);
 		</script>
 	</body>
 
