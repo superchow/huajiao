@@ -96,4 +96,34 @@ function GetRandStr($len) {
 	$smtp->debug = true;//是否显示发送的调试信息
 	return $state = $smtp->sendmail($smtpemailto, $smtpusermail, $mailtitle, $mailcontent, $mailtype);
 }*/
+
+//$sql = "DELETE FROM `task` WHERE taskid = '$taskid' AND school_id = '$school_id' ";
+//$myDB->delete($sql );
+//$result=$myDB->find("SELECT `taskid` FROM `task` WHERE taskid = '$taskid' AND school_id = '$school_id'");
+//if(!$result['taskid']){
+//	$output['msg'] = 'success';
+//	echo json_encode($output);
+//}else{
+//	$output['msg'] = 'fail';
+//	echo json_encode($output);
+//}
+ 
+$name = isset($_POST['name'])? $_POST['name'] : '';    
+$filename =date('Y-m-d', time()).'_'.iconv('utf-8','gb2312',$name).'_'.iconv('utf-8','gb2312',$_FILES['photo']['name']);
+$fileurl = '';
+if($_FILES['photo']['type'] == 'image/jpeg' or $_FILES['photo']['type'] == 'image/pjpeg' or $_FILES['photo']['type'] == 'image/gif'){
+	$fileurl .='../img/'.$filename;
+}else{
+	$fileurl .='../upfiles/'.$filename;
+} 
+$response = array();  
+if(move_uploaded_file($_FILES['photo']['tmp_name'], $fileurl)){  
+    $response['isSuccess'] = true;  
+    $response['name'] = $name;    
+    $response['photo'] = $fileurl;  
+}else{  
+    $response['isSuccess'] = false;    
+}  
+echo json_encode($response);  
+
 ?>
