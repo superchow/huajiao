@@ -1,161 +1,183 @@
 {
-	"main.html": {
-		"refer": [
-			"setting.html",
-			"html/setting.html",
-			"main-menu.html",
-			"html/task.html"
-		],
-		"resources": [
-			"js/app.js",
-			"js/mui.min.js",
-			"css/mui.min.css",
-			"fonts/mui.ttf",
-			"html/task.html"
-		]
-	},
-	"login.html": {
-		"resources": [
-			"js/app.js",
-			"js/mui.min.js",
-			"css/mui.min.css",
-			"css/style.css",
-			"js/mui.enterfocus.js",
-			"images/sinaweibo.png",
-			"images/weixin.png",
-			"images/qq.png",
-			"fonts/mui.ttf",
-			"html/reg.html"
-		],
-		"refer": [
-			"main.html",
-			"html/reg.html",
-			"html/unlock.html",
-			"html/forget_password.html"
-		]
-	},
-	"setting.html": {
-		"resources": [
-			"libs/easymob-webim-sdk/easemob.im-1.0.5.js",
-			"fonts/mui.ttf",
-			"libs/easymob-webim-sdk/json2.js",
-			"libs/easymob-webim-sdk/jquery-1.11.1.js",
-			"js/mui.locker.js",
-			"js/feedback.js",
-			"css/feedback-page.css",
-			"js/feedback-page.js",
-			"libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
-			"js/mui.view.js"
-		],
-		"refer": []
-	},
-	"guide.html": {
-		"resources": [
-			"images/guide-1.png",
-			"images/guide-2.png",
-			"js/mui.min.js",
-			"css/mui.min.css",
-			"images/guide-3.png",
-			"DB/login.php",
-			"js/app.js"
-		],
-		"refer": [
-			"main.html",
-			"login.html"
-		]
-	},
-	"html/reg.html": {
-		"resources": [
-			"fonts/mui.ttf",
-			"css/mui.min.css",
-			"css/style.css",
-			"js/app.js",
-			"js/mui.min.js",
-			"js/academy.class.js",
-			"js/mui.picker.min.js",
-			"css/mui.picker.min.css",
-			"js/city.data-3.js",
-			"login.html",
-			"js/mui.enterfocus.js"
-		],
-		"refer": [
-			"login.html"
-		]
-	},
-	"html/setting.html": {
-		"resources": [
-			"libs/easymob-webim-sdk/easemob.im-1.0.5.js",
-			"fonts/mui.ttf",
-			"libs/easymob-webim-sdk/json2.js",
-			"libs/easymob-webim-sdk/jquery-1.11.1.js",
-			"js/mui.locker.js",
-			"js/feedback.js",
-			"js/feedback-page.js",
-			"libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
-			"js/mui.view.js",
-			"js/app.js",
-			"js/mui.min.js",
-			"css/mui.min.css"
-		]
-	},
-	"html/forget_password.html": {
-		"resources": [
-			"fonts/mui.ttf",
-			"js/app.js",
-			"js/mui.min.js",
-			"css/mui.min.css",
-			"css/style.css"
-		]
-	},
-	"main-menu.html": {
-		"resources": [
-			"js/mui.min.js",
-			"fonts/mui.ttf",
-			"css/mui.min.css"
-		],
-		"refer": [
-			"html/related.html",
-			"html/task.html",
-			"html/self-center.html",
-			"html/class-members.html",
-			"html/daily-task.html",
-			"html/submit-task.html"
-		]
-	},
-	"html/task.html": {
-		"resources": [
-			"js/mui.min.js",
-			"css/mui.min.css",
-			"fonts/mui.ttf"
-		]
-	},
-	"html/self-center.html": {
-		"resources": [
-			"js/mui.min.js",
-			"css/mui.min.css"
-		]
-	},
-	"html/class-members.html": {
-		"resources": [
-			"js/mui.min.js",
-			"css/mui.min.css"
-		]
-	},
-	"html/related.html": {
-		"resources": [
-			"js/mui.min.js"
-		]
-	},
-	"html/daily-task.html": {
-		"resources": [
-			"js/mui.min.js",
-			"css/mui.min.css"
-		]
-	},
-	"html/submit-task.html": {
-		"resources": [
-			"js/mui.min.js",
-			"css/mui.min.css"
-		]
-	}
+  "main.html": {
+    "refer": [
+      "setting.html",
+      "html/setting.html",
+      "main-menu.html",
+      "html/task.html"
+    ],
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "fonts/mui.ttf",
+      "html/task.html"
+    ]
+  },
+  "login.html": {
+    "resources": [
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/style.css",
+      "js/mui.enterfocus.js",
+      "images/sinaweibo.png",
+      "images/weixin.png",
+      "images/qq.png",
+      "fonts/mui.ttf",
+      "html/reg.html"
+    ],
+    "refer": [
+      "main.html",
+      "html/reg.html",
+      "html/unlock.html",
+      "html/forget_password.html"
+    ]
+  },
+  "setting.html": {
+    "resources": [
+      "libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+      "fonts/mui.ttf",
+      "libs/easymob-webim-sdk/json2.js",
+      "libs/easymob-webim-sdk/jquery-1.11.1.js",
+      "js/mui.locker.js",
+      "js/feedback.js",
+      "css/feedback-page.css",
+      "js/feedback-page.js",
+      "libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+      "js/mui.view.js"
+    ],
+    "refer": []
+  },
+  "guide.html": {
+    "resources": [
+      "images/guide-1.png",
+      "images/guide-2.png",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "images/guide-3.png",
+      "DB/login.php",
+      "js/app.js"
+    ],
+    "refer": [
+      "main.html",
+      "login.html"
+    ]
+  },
+  "html/reg.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "css/style.css",
+      "js/app.js",
+      "js/mui.min.js",
+      "js/academy.class.js",
+      "js/mui.picker.min.js",
+      "css/mui.picker.min.css",
+      "js/city.data-3.js",
+      "login.html",
+      "js/mui.enterfocus.js"
+    ],
+    "refer": [
+      "login.html"
+    ]
+  },
+  "html/setting.html": {
+    "resources": [
+      "libs/easymob-webim-sdk/easemob.im-1.0.5.js",
+      "fonts/mui.ttf",
+      "libs/easymob-webim-sdk/json2.js",
+      "libs/easymob-webim-sdk/jquery-1.11.1.js",
+      "js/mui.locker.js",
+      "js/feedback.js",
+      "js/feedback-page.js",
+      "libs/easymob-webim-sdk/strophe-custom-2.0.0.js",
+      "js/mui.view.js",
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ]
+  },
+  "html/forget_password.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "js/app.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/style.css"
+    ]
+  },
+  "main-menu.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "html/submit-task.html",
+      "html/self-center.html",
+      "html/related.html",
+      "html/task.html",
+      "html/daily-task.html",
+      "html/class-members.html"
+    ],
+    "refer": [
+      "html/related.html",
+      "html/task.html",
+      "html/self-center.html",
+      "html/class-members.html",
+      "html/daily-task.html",
+      "html/submit-task.html"
+    ]
+  },
+  "html/task.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "fonts/mui.ttf",
+      "html/task-detail.html"
+    ],
+    "refer": [
+      "html/task-detail.html",
+      "html/submit-task.html"
+    ]
+  },
+  "html/self-center.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ]
+  },
+  "html/class-members.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/mui.indexedlist.css",
+      "js/mui.indexedlist.js",
+      "js/mui.view.js",
+      "fonts/mui.ttf"
+    ]
+  },
+  "html/related.html": {
+    "resources": [
+      "js/mui.min.js"
+    ]
+  },
+  "html/daily-task.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css"
+    ]
+  },
+  "html/submit-task.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "js/mui.picker.min.js",
+      "fonts/mui.ttf",
+      "css/mui.picker.min.css",
+      "main-menu.html"
+    ],
+    "refer": [
+      "main-menu.html"
+    ]
+  }
 }
