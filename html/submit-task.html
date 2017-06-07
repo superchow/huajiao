@@ -6,16 +6,255 @@
 		<title></title>
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" type="text/css" href="../css/mui.picker.min.css"/>
+		<style type="text/css">
+			.form-text{
+				padding:10px;
+			}
+			.form-text label{
+				margin-left:2%;
+			}
+			#task-info:focus{
+				border:solid 1px blue !important;
+				border-radius:5px;
+				box-shadow: 5px 5px 3px #888888;
+			}
+			.mui-btn-block,.mui-disabled{
+				padding:10px !important;
+			}
+		</style>
+		<script type="text/javascript">
+			//声明全局变量
+			var url = localStorage.getItem("url"),
+				Ctaskupload = Cfileupload = null;
+			var user = JSON.parse(localStorage.getItem("$users"));
+		</script>
 	</head>
 
 	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">发布任务</h1>
+		</header>
 		<div class="mui-content">
-			提交任务
+			<form id='task-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<label>主题</label>
+					<input id='task-title' type="text" class="mui-input-clear mui-input" placeholder="">
+				</div>
+				<div class="form-text">
+					<label>任务内容</label>
+					<textarea id="task-info" name="" rows="8" cols=""></textarea>
+				</div>
+				<div class="mui-input-row">
+					<label>开始时间</label>
+					<input id="task-starttime" type="text" class="mui-input timePicker" placeholder="选择开始时间" readonly="readonly">
+				</div>
+				<div class="mui-input-row">
+					<label>完成时间</label>
+					<input id="task-endtime" type="text" class="mui-input timePicker" placeholder="选择完成时间" readonly="readonly">
+				</div>
+				<div class="mui-input-row">
+					<label>请选择文件</label>					
+					<input type="file" name="files" id='task-file' type="text" style="line-height: 2.5;">
+		
+				</div>
+				<div class="mui-input-row" style="padding:5px 15px;">
+					<input type="hidden" name="username" id="username" value="" />
+					<button id="fileuploader"  type="button" style="margin-left: 110px;" class="mui-btnmui-btn-block mui-btn-blue">上传文件</button>
+				</div>
+				
+			</form>
+			<div style="padding:10px 15px;">
+				<button id="upload" type="button" data-loading-text="提交中" class="mui-btn mui-btn-block mui-btn-blue">发布任务</button>
+			</div>
+			
 		</div>
 		<script src="../js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
+		<script src="../js/mui.picker.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	mui.init();
+	var task_info = document.getElementById("task-info"),
+		task_title = document.getElementById("task-title"),
+		task_starttime = document.getElementById("task-starttime"),
+		task_endtime = document.getElementById("task-endtime"),
+		files = document.querySelector("#task-form input[type='file']");
+	var task_id = null;
+	var upname = document.getElementById("username");
+	upname.value = user.name;
+	mui.plusReady(function(){
+		var timePicker = document.getElementsByClassName("timePicker");
+		var years = new Date().getFullYear();
+		var options={
+			"type":"date",
+			"beginYear":years,
+			"endYear":years+2
+		}
+		var picker = new mui.DtPicker(options);					
+		var openpicker = function(that){	
+			picker.show(function(rs){
+				birth=rs.text;
+				that.value=birth;
+				//picker.dispose();
+			});
+		}
+		mui.each(timePicker,function(index,element){
+			element.addEventListener('tap',function(){
+				var that = this;					
+				if(!document.activeElement){
+					openpicker(that);	
+				}else{						
+					setTimeout(function(){//延时解决与软键盘的冲突
+						openpicker(that);
+					},500);
+				}
+			},false);
+		});
+		//发布任务
+		document.getElementById("upload").addEventListener("tap",function(){
+//			setTimeout(function(){//关闭软键盘，延时解决冲突域
+//				document.activeElement.blur();
+//			},500);
+			var that = this; //保存this的指向
+			mui(that).button('loading');
+			var filesurl = "",			 
+		    	title = task_title.value,
+		        info = task_info.value,
+		        starttime =  task_starttime.value,
+		        endtime = task_endtime.value;
+		    if(!title || !info || !info){
+		    	mui(that).button('reset');
+		    	return mui.toast("请填写完整");
+		    }
+		    if(info.length < 2 || title.length < 3){
+		    	mui(that).button('reset');
+		    	return mui.toast("内容过少");
+		    }
+		    if(files.value){
+		    	filesurl = fileUpload(files.value);
+		    }
+		    var user = JSON.parse(localStorage.getItem("$users"));
+		    console.log(user.current_class.length);
+		    if((user.current_class == "") || (user.current_class.length < 2) || (user.current_table.length < 2)){
+		    	mui(that).button('reset');
+		    	return mui.toast("尚未加入任何班级");
+		    }
+		    mui.ajax(url+"DB/subtask.php",{
+		    	data:{
+					taskid: task_id || "0",
+		    		school_id: user.school_id,
+		    		identity: user.identity,
+		    		Class: user.current_table,
+		    		permission: user.permission,
+		    		title: title,
+		    		info: encodeURIComponent(info),
+		    		starttime: starttime + " 08:00:00" || getNowFormatDate(),
+		    		endtime: endtime + " 08:00:00" || (years +'-12-29 12:00:00'),
+		    		filesurl: filesurl
+		    	},
+		    	dataType:'JSON',//服务器返回json格式数据
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒；
+				crossDomain: true,
+				//headers:{'Content-Type':'application/json'},	
+		    	success:function(data){
+		    		console.log(data);
+		    		var data = JSON.parse(data);
+		    		if(data.msg == 'success' ){
+		    			mui.toast("发布成功");
+		    		}else if(data.msg == 'faile'){
+		    			mui.toast("发布任务失败");
+		    		}else if(data.msg == 'ban'){
+		    			mui.toast("您没有权限发布任务");
+		    		}else if(data.msg == 'has'){
+		    			mui.toast("不能发布同样的内容");
+		    		}else if(data.msg == 'other'){
+		    			mui.toast("您尚未加入班级");
+		    		}else{}
+		    		
+		    	},
+		    	error:function(xhr,type,errorThrown){
+		    		mui(that).button('reset');
+		    		if(type=='timeout') {
+		              	mui.toast("提交超时：请检查网络");
+		           } else {
+		              	mui.toast('请求失败：' + type + '\n err:' + errorThrown);
+		            }
+		    	},
+		    	complete:function(){
+		    		mui(that).button('reset');
+		    	}
+		    });
+		});
+		document.getElementById("fileuploader").addEventListener("tap",function(){
+			var form=document.getElementById("task-form");
+			var formData=new FormData(form);
+            var oReq = new XMLHttpRequest();
+            oReq.onreadystatechange=function(){
+              if(oReq.readyState==4){                                     
+                if(oReq.status==200){
+                    var json=oReq;
+                    console.log(JSON.stringify(json));
+                }
+              }
+            }
+            oReq.open("POST", url+"DB//upload.php",false);
+            oReq.send(formData); 
+            oReq.addEventListener("loadend", function(){
+            	 var json=oReq;
+                   console.log(JSON.stringify(json));
+            }, false);
+            return false;
+		}); 
+		
+		function fileUpload(value){
+			
+		}
+		function getNowFormatDate() {
+		    var date = new Date();
+		    var seperator1 = "-";
+		    var seperator2 = ":";
+		    var month = date.getMonth() + 1;
+		    var strDate = date.getDate();
+		    if (month >= 1 && month <= 9) {
+		        month = "0" + month;
+		    }
+		    if (strDate >= 0 && strDate <= 9) {
+		        strDate = "0" + strDate;
+		    }
+		    var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate;
+//		            + " " + date.getHours() + seperator2 + date.getMinutes()
+//		            + seperator2 + date.getSeconds();
+		    return currentdate;
+		} 
+		(function(){
+			var data = plus.webview.currentWebview().taskAll;
+			console.log(data);
+			if(data){
+				data = JSON.parse(data);
+				task_id = data.taskid;
+				task_title.value = data.title;
+				task_info.value = decodeURIComponent(data.info);
+				task_starttime.value = data.starttime;
+				task_endtime.value = data.endtime;
+			}
+		})(mui); 
+		//fire页面传值失败，可能是还没创建就传了
+		/*window.addEventListener("revisetask",function(event){
+			console.log("促发")
+			var data = event.detail.taskAll;
+			if(data){
+				task_id = data.taskid;
+				task_title.value = data.title;
+				task_info.value = decodeURIComponent(data.info);
+				task_starttime.value = data.starttime;
+				task_endtime.value = data.endtime;
+			}
+			console.log(data);			
+		});*/
+	});
+	
+</script>
 	</body>
 
 </html>
